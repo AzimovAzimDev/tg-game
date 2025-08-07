@@ -1,0 +1,8 @@
+This is a placeholder for a bug texture image.
+In a real implementation, this would be an actual image file (PNG, JPG, etc.) 
+that would be used as a texture for the bug models in the game.
+
+For a complete implementation, you would need to:
+1. Create or obtain actual texture images
+2. Load them in the game.js file using THREE.TextureLoader
+3. Apply them to the bug models
