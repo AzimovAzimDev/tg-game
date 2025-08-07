@@ -6,6 +6,7 @@ A Telegram mini-game where players hunt and squash bugs within a time limit.
 
 - **Game canvas**: HTML5 Canvas + Three.js
 - **UI & Stats overlay**: React.js
+- **Language**: TypeScript
 - **Telegram integration**: Telegram Web App JavaScript API
 - **Build tools**: Vite + pnpm
 
@@ -18,9 +19,9 @@ A Telegram mini-game where players hunt and squash bugs within a time limit.
 ## Entry Points
 
 - `index.html` loads the main entry point script
-- `src/main.jsx` imports and initializes both the game and UI components
-- `src/game/game.js` initializes Three.js scene
-- `src/ui/ui.jsx` mounts React into a fixed DOM container
+- `src/main.tsx` imports and initializes both the game and UI components
+- `src/game/game.ts` initializes Three.js scene
+- `src/ui/ui.tsx` mounts React into a fixed DOM container
 
 ## Development
 
@@ -28,6 +29,7 @@ A Telegram mini-game where players hunt and squash bugs within a time limit.
 
 - Node.js (v14 or later)
 - pnpm package manager
+- TypeScript
 - Modern web browser
 
 ### Running the Game
@@ -44,6 +46,19 @@ A Telegram mini-game where players hunt and squash bugs within a time limit.
 
 3. Open the browser at the URL shown in the terminal (usually http://localhost:5173)
 4. The game should display a rotating cube (placeholder) and the React UI overlay
+
+### TypeScript Configuration
+
+The project uses TypeScript with "soft" settings to allow for gradual type adoption:
+
+- Non-strict type checking
+- JavaScript files are allowed
+- Implicit any types are permitted
+- React JSX support is enabled
+
+The TypeScript configuration is split into two files:
+- `tsconfig.json` - Main TypeScript configuration
+- `tsconfig.node.json` - Configuration for Vite and Node.js environment
 
 ### Building for Production
 
