@@ -1,6 +1,22 @@
 // Three.js Game Initialization
 import * as THREE from 'three';
 
+// Define icon types
+const IconType = {
+    FOLDER: 'folder',
+    DOCUMENT: 'document',
+    TERMINAL: 'terminal',
+    IDE: 'ide'
+};
+
+// Icon colors
+const IconColors = {
+    [IconType.FOLDER]: 0x4a6bff,    // Blue
+    [IconType.DOCUMENT]: 0xffffff,   // White
+    [IconType.TERMINAL]: 0x2d2d2d,   // Dark gray
+    [IconType.IDE]: 0x7c43bd        // Purple
+};
+
 class BugHuntGame {
     constructor() {
         this.canvas = document.getElementById('game-canvas');
@@ -28,6 +44,23 @@ class BugHuntGame {
             alpha: true // Allow transparency
         });
 
+        // Store world bounds for icon placement
+        this.worldBounds = {
+            minX: -8,
+            maxX: 8,
+            minZ: -8,
+            maxZ: 8
+        };
+
+        // Array to store all file icons
+        this.fileIcons = [];
+
+        // Number of icons to spawn
+        this.iconCount = 30;
+
+        // Texture loader for icon textures
+        this.textureLoader = new THREE.TextureLoader();
+
         this.init();
     }
 
@@ -43,6 +76,9 @@ class BugHuntGame {
 
         // Load desktop background texture
         this.loadDesktopBackground();
+
+        // Initialize file icons
+        this.initializeFileIcons();
 
         // Add a simple cube for testing (will be replaced with bugs later)
         const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -155,12 +191,160 @@ class BugHuntGame {
         this.renderer.setSize(this.width, this.height);
     }
 
+    // Get texture URL for the specified icon type
+    getIconTextureUrl(type) {
+        // In a real implementation, these would be paths to actual texture files
+        // For now, we'll use placeholder URLs from a CDN
+        switch (type) {
+            case IconType.FOLDER:
+                return 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/sprites/disc.png';
+            case IconType.DOCUMENT:
+                return 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/planets/earth_atmos_2048.jpg';
+            case IconType.TERMINAL:
+                return 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/floors/FloorsCheckerboard_S_Diffuse.jpg';
+            case IconType.IDE:
+                return 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/lava/lavatile.jpg';
+            default:
+                return 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@dev/examples/textures/sprites/disc.png';
+        }
+    }
+
+    // Create a file icon of the specified type
+    createFileIcon(type) {
+        // Create a plane geometry for the icon
+        const geometry = new THREE.PlaneGeometry(0.8, 0.8);
+
+        // Default material with color based on icon type (used as fallback)
+        const material = new THREE.MeshStandardMaterial({
+            color: IconColors[type],
+            roughness: 0.5,
+            metalness: 0.2,
+            side: THREE.DoubleSide
+        });
+
+        // Create the mesh with default material
+        const icon = new THREE.Mesh(geometry, material);
+
+        // Try to load texture
+        const textureUrl = this.getIconTextureUrl(type);
+        this.textureLoader.load(
+            textureUrl,
+            (texture) => {
+                // Create a new material with the loaded texture
+                const texturedMaterial = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    color: 0xffffff, // White to not affect texture color
+                    roughness: 0.5,
+                    metalness: 0.2,
+                    side: THREE.DoubleSide
+                });
+
+                // Apply the textured material
+                icon.material = texturedMaterial;
+            },
+            undefined, // onProgress callback not needed
+            (error) => {
+                console.error(`Error loading texture for ${type} icon:`, error);
+                // Keep using the default colored material
+            }
+        );
+
+        // Add shadow casting
+        icon.castShadow = true;
+        icon.receiveShadow = false;
+
+        // Store the icon type
+        icon.userData.type = type;
+
+        // Slightly rotate the icon to face the camera better
+        icon.rotation.x = -Math.PI / 6; // Tilt slightly
+
+        // Add a small random rotation for variety
+        icon.rotation.z = (Math.random() - 0.5) * 0.2;
+
+        return icon;
+    }
+
+    // Initialize all file icons
+    initializeFileIcons() {
+        // Clear any existing icons
+        this.fileIcons.forEach(icon => {
+            this.scene.remove(icon);
+        });
+        this.fileIcons = [];
+
+        // Create a pool of icons with random types and positions
+        for (let i = 0; i < this.iconCount; i++) {
+            // Randomly select an icon type
+            const types = Object.values(IconType);
+            const randomType = types[Math.floor(Math.random() * types.length)];
+
+            // Create the icon
+            const icon = this.createFileIcon(randomType);
+
+            // Position the icon randomly within world bounds
+            this.positionIconRandomly(icon);
+
+            // Add to scene and tracking array
+            this.scene.add(icon);
+            this.fileIcons.push(icon);
+        }
+    }
+
+    // Position an icon randomly within world bounds
+    positionIconRandomly(icon) {
+        const { minX, maxX, minZ, maxZ } = this.worldBounds;
+
+        // Random position within bounds
+        const x = minX + Math.random() * (maxX - minX);
+        const z = minZ + Math.random() * (maxZ - minZ);
+
+        // Set position (y is fixed to be on the "desktop")
+        icon.position.set(x, 0.1, z); // Slightly above the desktop
+
+        // Store original position for reference
+        icon.userData.originalPosition = { x, z };
+    }
+
+    // Check if an icon is outside the visible area
+    isIconOutOfView(icon) {
+        // Convert world position to screen position
+        const iconPosition = icon.position.clone();
+        iconPosition.project(this.camera);
+
+        // Check if the icon is outside the screen bounds with some margin
+        const margin = 0.1; // 10% margin
+        return (
+            iconPosition.x < -1 - margin ||
+            iconPosition.x > 1 + margin ||
+            iconPosition.y < -1 - margin ||
+            iconPosition.y > 1 + margin
+        );
+    }
+
+    // Recycle icons that are out of view
+    recycleOutOfViewIcons() {
+        this.fileIcons.forEach(icon => {
+            if (this.isIconOutOfView(icon)) {
+                // Move the icon to the opposite side of the screen
+                const { x, z } = icon.position;
+
+                // Determine new position based on camera direction
+                // This is a simplified approach - we just move it to a new random position
+                this.positionIconRandomly(icon);
+            }
+        });
+    }
+
     animate() {
         requestAnimationFrame(this.animate.bind(this));
 
         // Rotate the cube
         this.cube.rotation.x += 0.01;
         this.cube.rotation.y += 0.01;
+
+        // Recycle icons that are out of view
+        this.recycleOutOfViewIcons();
 
         this.renderer.render(this.scene, this.camera);
     }

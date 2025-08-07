@@ -91,6 +91,27 @@ The game uses the following setup for its 3D environment:
    - Ambient light for overall illumination
    - Soft directional light with shadows
 
+## File Icon System
+
+The game includes a system for spawning and managing file icons:
+
+1. **Icon Types**:
+   - Folders (blue)
+   - Documents (white)
+   - Terminal windows (dark gray)
+   - IDE/code editors (purple)
+   - Each icon type has a unique texture and color
+
+2. **Icon Layout**:
+   - Random distribution within defined world boundaries
+   - Icons are positioned slightly above the desktop plane
+   - Each icon has a slight tilt and random rotation for visual variety
+
+3. **Dynamic Recycling**:
+   - Icons that move beyond the visible area are recycled
+   - Recycled icons are repositioned to new random locations
+   - This creates an infinite scrolling effect as the player moves
+
 ### Next Steps for Development
 
 1. Implement actual bug models and animations in Three.js
