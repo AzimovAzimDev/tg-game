@@ -13,17 +13,27 @@ function GameUI() {
     const [gameOver, setGameOver] = useState(false);
     const [gameInstance, setGameInstance] = useState(null);
 
-    // Listen for game ready event
+    // Listen for game events
     useEffect(() => {
+        // Handle game ready event
         const handleGameReady = (event) => {
             console.log('Game is ready!');
             setGameInstance(event.detail.game);
         };
 
+        // Handle bug squash event
+        const handleBugSquash = () => {
+            setScore(prevScore => prevScore + 1);
+        };
+
+        // Add event listeners
         window.addEventListener('gameReady', handleGameReady);
+        window.addEventListener('bugSquash', handleBugSquash);
 
         return () => {
+            // Remove event listeners
             window.removeEventListener('gameReady', handleGameReady);
+            window.removeEventListener('bugSquash', handleBugSquash);
         };
     }, []);
 
@@ -55,6 +65,10 @@ function GameUI() {
         setGameOver(false);
         setScore(0);
         setTime(60);
+
+        // Dispatch game start event to notify the game component
+        const gameStartEvent = new CustomEvent('gameStart');
+        window.dispatchEvent(gameStartEvent);
 
         // Notify Telegram that the game has started
         if (telegram) {

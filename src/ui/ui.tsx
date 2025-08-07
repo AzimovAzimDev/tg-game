@@ -1,7 +1,13 @@
 // React UI Component for Bug Hunt Game
 import React, { useState, useEffect } from 'react';
 import * as ReactDOM from 'react-dom/client';
-import { BugHuntGame } from '../game/game';
+// Import BugHuntGame type for TypeScript, but the actual implementation comes from game.js
+// which is loaded by main.tsx
+interface BugHuntGame {
+  // Add minimal interface for TypeScript
+  startGame?: () => void;
+  endGame?: () => void;
+}
 
 // Telegram WebApp interface
 interface TelegramWebApp {
@@ -28,18 +34,28 @@ function GameUI(): JSX.Element {
     const [gameOver, setGameOver] = useState<boolean>(false);
     const [gameInstance, setGameInstance] = useState<BugHuntGame | null>(null);
 
-    // Listen for game ready event
+    // Listen for game events
     useEffect(() => {
+        // Handle game ready event
         const handleGameReady = (event: Event) => {
             console.log('Game is ready!');
             const gameEvent = event as GameReadyEvent;
             setGameInstance(gameEvent.detail.game);
         };
 
+        // Handle bug squash event
+        const handleBugSquash = () => {
+            setScore(prevScore => prevScore + 1);
+        };
+
+        // Add event listeners
         window.addEventListener('gameReady', handleGameReady);
+        window.addEventListener('bugSquash', handleBugSquash);
 
         return () => {
+            // Remove event listeners
             window.removeEventListener('gameReady', handleGameReady);
+            window.removeEventListener('bugSquash', handleBugSquash);
         };
     }, []);
 
@@ -71,6 +87,10 @@ function GameUI(): JSX.Element {
         setGameOver(false);
         setScore(0);
         setTime(60);
+
+        // Dispatch game start event to notify the game component
+        const gameStartEvent = new CustomEvent('gameStart');
+        window.dispatchEvent(gameStartEvent);
 
         // Notify Telegram that the game has started
         if (telegram?.HapticFeedback) {
