@@ -274,10 +274,6 @@ export default function DeployGame() {
 
   return (
     <div className="wrap">
-      <header>
-        <h1>🚀 Deploy or Die — 60‑second DevOps Dash</h1>
-        <span className="badge">Standalone • HTML + CSS + JS • WebAudio</span>
-      </header>
 
       <aside className="sidebar">
         <div className="panel">
@@ -316,22 +312,6 @@ export default function DeployGame() {
               How to play
             </button>
           </div>
-        </div>
-
-        <div className="panel footnote">
-          Checklist order:
-          <ol style={{ margin: '6px 0 0 20px' }}>
-            <li>Get requirements 📝</li>
-            <li>Create branch 🌿</li>
-            <li>Write code 💻</li>
-            <li>Write tests 🧪</li>
-            <li>Fix bugs 🐛</li>
-            <li>Resolve conflicts ⚔️</li>
-            <li>Get MR approvals ✅</li>
-            <li>Merge to main 🔀</li>
-            <li>Deploy to prod 🚀</li>
-          </ol>
-          Tips: Click only the <em>next</em> required step. Tasks fall constantly. Wrong clicks cost time.
         </div>
       </aside>
 
