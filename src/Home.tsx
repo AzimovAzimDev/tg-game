@@ -22,15 +22,19 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ padding: '1rem' }}>
+    <div style={{ padding: '1rem', maxWidth: '480px', margin: '0 auto' }}>
       <h1>Deploy or Die</h1>
-      <div>
-        <p>Games played: {stats.gamesPlayed}</p>
-        <p>Best score: {stats.bestScore}</p>
-        {stats.gamesPlayed > 0 && <p>Last score: {stats.lastScore}</p>}
+      <p>
+        Твоя задача — поймать <br /> все шаги деплоя <br /> в правильном порядке, <br /> пока таймер не
+        обнулился
+      </p>
+      <div style={{ marginTop: '1rem' }}>
+        <p>Игры сыграно: {stats.gamesPlayed}</p>
+        <p>Лучший счёт: {stats.bestScore}</p>
+        {stats.gamesPlayed > 0 && <p>Последний счёт: {stats.lastScore}</p>}
       </div>
-      <Link to="/game">
-        <button style={{ marginTop: '1rem' }}>Start Game</button>
+      <Link to="/rules">
+        <button style={{ marginTop: '1.5rem' }}>Начать</button>
       </Link>
     </div>
   );
