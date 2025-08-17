@@ -1,40 +1,69 @@
-# Deploy or Die — Telegram Mini App
+# React + TypeScript + Vite
 
-TypeScript + React (Vite). No external services. Integrates with Telegram WebApp API for theming, haptics, and result submission via `WebApp.sendData`.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Run locally
+Currently, two official plugins are available:
 
-```bash
-pnpm i
-pnpm dev
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-The app uses a Telegram WebApp mock if `window.Telegram.WebApp` is not present.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## Build
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-```bash
-pnpm build
-pnpm preview
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-## Assets
-
-Place small WAV/OGG SFX files in `public/sfx/`:
-- `tap.wav`
-- `error.wav`
-- `success.wav`
-
-## Telegram integration
-- On real Telegram, the app reads `themeParams`, calls `ready()` and `expand()`.
-- Results screen triggers `WebApp.sendData(JSON.stringify(ResultPayload))`.
-
-## Config
-Adjust `src/game/config.ts` for session length, spawn cadence, grid size, and scoring.
-
-## Anti-cheat
-- Uses `performance.now()` for timing.
-- Frame delta clamped to 80ms.
-- Tap anti-spam: 150ms.
-- Seeded PRNG for spawns.
-- Client checksum via CRC32.
