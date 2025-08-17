@@ -531,11 +531,9 @@ export default function DeployGame() {
           continue;
         }
         if (missed) {
-          // Off-platform failure if center outside bounds
-          const p = state.platform;
-          if (Math.abs(b.x - p.x) > p.w / 2) return endFail('off-platform');
-          // otherwise, it slipped down inside platform bounds: just remove
+          // Dropped out: just remove the block. No penalties or state changes.
           state.blocks.splice(i, 1);
+          continue;
         }
       }
 
