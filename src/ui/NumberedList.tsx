@@ -1,4 +1,3 @@
-import React from "react";
 import css from "./NumberedList.module.css";
 
 type Item = { id: number; text: string };
