@@ -1,7 +1,6 @@
-import React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import './ui/ui.jsx';
-import './game/game.js';
-import '../public/styles.css';
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import './styles.css'
 
-console.log('Main entry point loaded');
+createRoot(document.getElementById('root')!).render(<App />)

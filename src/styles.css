@@ -1,0 +1,33 @@
+:root {
+  --bg: #0b0f12;
+  --text: #e6f1ff;
+  --hint: #8aa0b3;
+  --accent: #2dd4bf;
+  --danger: #ef4444;
+  --card: #111827;
+}
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+
+.app { height: 100%; display: grid; grid-template-rows: 1fr; }
+.button { background: var(--accent); color: #001018; border: 0; padding: 14px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.button.secondary { background: #1f2937; color: var(--text); }
+.row { display: flex; gap: 12px; align-items: center; }
+.center { display: grid; place-items: center; height: 100%; padding: 16px; }
+.card { background: var(--card); border: 1px solid #1f2937; border-radius: 14px; padding: 16px; }
+.hud { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; gap: 12px; pointer-events: none; }
+.hud .box { background: #0f172a; padding: 10px 12px; border-radius: 12px; border: 1px solid #1f273a; pointer-events: auto; }
+.grid { position: relative; width: 100%; max-width: 520px; aspect-ratio: 3 / 4; margin: 0 auto; }
+.grid-inner { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); gap: 8px; }
+.task { position: relative; display: grid; place-items: center; border-radius: 12px; border: 1px solid #1f273a; background: #0b1220; user-select: none; touch-action: manipulation; }
+.task .label { font-weight: 700; text-align: center; padding: 6px 8px; }
+.task.correct { outline: 2px solid #22c55e; transform: scale(1.03); transition: transform 120ms; }
+.task.mistake { outline: 2px solid var(--danger); animation: shake 220ms ease-in-out; }
+@keyframes shake { 0%{transform:translateX(0)} 25%{transform:translateX(-4px)} 50%{transform:translateX(4px)} 75%{transform:translateX(-2px)} 100%{transform:translateX(0)} }
+.checklist { display: grid; gap: 6px; }
+.check-item { padding: 6px 10px; border-radius: 8px; background: #0f172a; border: 1px solid #1f273a; opacity: 0.65; }
+.check-item.active { opacity: 1; outline: 2px solid var(--accent); }
+.mock-badge { position: fixed; right: 8px; bottom: 8px; background: #1f2937; color: #9ca3af; padding: 6px 8px; border-radius: 8px; font-size: 12px; }
+.results { display: grid; gap: 12px; max-width: 520px; margin: 0 auto; padding: 16px; }
+.timer-canvas { width: 100%; height: 10px; border-radius: 999px; background: #0f172a; border: 1px solid #1f273a; display:block }
+.effects { position: absolute; inset: 0; pointer-events:none }
