@@ -11,6 +11,7 @@
 
 .game-screen {
   min-height: 100svh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
 }

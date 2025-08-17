@@ -3,28 +3,19 @@ import GoalPill from "../ui/GoalPill";
 import Playfield from "../ui/Playfield";
 import "../styles/game.css";
 
-export default function GameUI({
-  state,
-  onBlockTap,
-}: {
-  state: {
-    timeLeftMs: number;
-    score: number;
-    scoreDelta?: { v: number; at: number };
-    goalLabel: string;
-    blocks: { id: string; x: number; y: number; label: string }[];
+export default function Game() {
+  const state = {
+    timeLeftMs: 0,
+    score: 0,
+    goalLabel: "",
+    blocks: [] as { id: string; x: number; y: number; label: string }[],
   };
-  onBlockTap: (id: string) => void;
-}) {
+
   return (
     <div className="game-screen">
-      <HeaderBar
-        timeLeftMs={state.timeLeftMs}
-        score={state.score}
-        delta={state.scoreDelta}
-      />
+      <HeaderBar timeLeftMs={state.timeLeftMs} score={state.score} />
       <GoalPill label={state.goalLabel} />
-      <Playfield blocks={state.blocks} onTap={onBlockTap} />
+      <Playfield blocks={state.blocks} onTap={() => {}} />
     </div>
   );
 }
