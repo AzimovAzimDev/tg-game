@@ -4,10 +4,15 @@ import './DeployGame.css';
 export default function DeployGame() {
   useEffect(() => {
     const CHECKLIST = [
-      { key: 'install', label: 'Install dependencies 📦', emoji: '📦' },
-      { key: 'fix', label: 'Fix bug 🐛', emoji: '🐛' },
-      { key: 'merge', label: 'Merge PR 🔀', emoji: '🔀' },
-      { key: 'deploy', label: 'Push to prod 🚀', emoji: '🚀' },
+      { key: 'requirements', label: 'Get requirements 📝', emoji: '📝' },
+      { key: 'branch', label: 'Create branch 🌿', emoji: '🌿' },
+      { key: 'code', label: 'Write code 💻', emoji: '💻' },
+      { key: 'tests', label: 'Write tests 🧪', emoji: '🧪' },
+      { key: 'fix', label: 'Fix bugs 🐛', emoji: '🐛' },
+      { key: 'conflicts', label: 'Resolve conflicts ⚔️', emoji: '⚔️' },
+      { key: 'approve', label: 'Get MR approvals ✅', emoji: '✅' },
+      { key: 'merge', label: 'Merge to main 🔀', emoji: '🔀' },
+      { key: 'deploy', label: 'Deploy to prod 🚀', emoji: '🚀' },
     ];
 
       const GAME_SECONDS = 60;
@@ -177,6 +182,15 @@ export default function DeployGame() {
       state.running = false;
       if (state.spawnTimer) clearTimeout(state.spawnTimer);
       finalScore.textContent = String(state.score);
+      // update stats in localStorage
+      const raw = localStorage.getItem('deployGameStats');
+      const stats = raw
+        ? JSON.parse(raw)
+        : { gamesPlayed: 0, bestScore: 0, lastScore: 0 };
+      stats.gamesPlayed += 1;
+      stats.lastScore = state.score;
+      stats.bestScore = Math.max(stats.bestScore, state.score);
+      localStorage.setItem('deployGameStats', JSON.stringify(stats));
       finish.classList.add('show');
       endTitle.textContent = endTitlePhrases[Math.floor(Math.random() * endTitlePhrases.length)];
       nextBox.style.opacity = '0.75';
@@ -228,7 +242,9 @@ export default function DeployGame() {
 
     startBtn.addEventListener('click', startGame);
     howBtn.addEventListener('click', () => {
-      alert('Click falling tasks in this exact order:\n\n1) Install dependencies 📦\n2) Fix bug 🐛\n3) Merge PR 🔀\n4) Push to prod 🚀\n\nWrong click = −5 seconds. Finish as many deploy cycles as you can in 60 seconds!');
+      alert(
+        'Click falling tasks in this exact order:\n\n1) Get requirements 📝\n2) Create branch 🌿\n3) Write code 💻\n4) Write tests 🧪\n5) Fix bugs 🐛\n6) Resolve conflicts ⚔️\n7) Get MR approvals ✅\n8) Merge to main 🔀\n9) Deploy to prod 🚀\n\nWrong click = −5 seconds. Finish as many deploy cycles as you can in 60 seconds!'
+      );
     });
     playAgain.addEventListener('click', startGame);
     shareBtn.addEventListener('click', async () => {
@@ -282,7 +298,7 @@ export default function DeployGame() {
             <div id="time">60</div>
           </div>
           <div className="next" id="nextBox">
-            Next: <strong id="nextLabel">Install dependencies 📦</strong>
+            Next: <strong id="nextLabel">Get requirements 📝</strong>
           </div>
           <div className="legend" style={{ marginTop: '8px' }}>
             <div>
@@ -305,10 +321,15 @@ export default function DeployGame() {
         <div className="panel footnote">
           Checklist order:
           <ol style={{ margin: '6px 0 0 20px' }}>
-            <li>Install dependencies 📦</li>
-            <li>Fix bug 🐛</li>
-            <li>Merge PR 🔀</li>
-            <li>Push to prod 🚀</li>
+            <li>Get requirements 📝</li>
+            <li>Create branch 🌿</li>
+            <li>Write code 💻</li>
+            <li>Write tests 🧪</li>
+            <li>Fix bugs 🐛</li>
+            <li>Resolve conflicts ⚔️</li>
+            <li>Get MR approvals ✅</li>
+            <li>Merge to main 🔀</li>
+            <li>Deploy to prod 🚀</li>
           </ol>
           Tips: Click only the <em>next</em> required step. Tasks fall constantly. Wrong clicks cost time.
         </div>
@@ -323,7 +344,7 @@ export default function DeployGame() {
             🔥 Combo: <span id="combo">x1</span>
           </div>
           <div className="chip">
-            ➡️ Next: <strong id="hudNext">Install dependencies 📦</strong>
+            ➡️ Next: <strong id="hudNext">Get requirements 📝</strong>
           </div>
         </div>
         <div className="toast" id="toast">
