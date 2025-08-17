@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import DeployGame from './DeployGame';
-import Rules from './Rules';
+import Rules from './screens/Rules';
 import Welcome from './screens/Welcome';
 
 export default function App() {
@@ -9,7 +9,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Welcome onStart={() => navigate('/rules')} />} />
-      <Route path="/rules" element={<Rules />} />
+      <Route path="/rules" element={<Rules onStart={() => navigate('/game')} />} />
       <Route path="/game" element={<DeployGame />} />
     </Routes>
   );
