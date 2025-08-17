@@ -35,6 +35,19 @@ export default function Rules({ onStart }: Props) {
     { id: 3, text: "Жми только нужную задачу, остальное игнорируй" },
   ];
 
+  // Ordered steps list (previously shown via alert in the game)
+  const steps = [
+    { id: 1, text: "Get requirements 📝" },
+    { id: 2, text: "Create branch 🌿" },
+    { id: 3, text: "Write code 💻" },
+    { id: 4, text: "Write tests 🧪" },
+    { id: 5, text: "Fix bugs 🐛" },
+    { id: 6, text: "Resolve conflicts ⚔️" },
+    { id: 7, text: "Get MR approvals ✅" },
+    { id: 8, text: "Merge to main 🔀" },
+    { id: 9, text: "Deploy to prod 🚀" },
+  ];
+
   const start = () => {
     try {
       tg?.HapticFeedback?.impactOccurred?.("light");
@@ -51,6 +64,9 @@ export default function Rules({ onStart }: Props) {
       </h1>
 
       <NumberedList items={list} />
+
+      <h2 className={css.title} style={{ fontSize: "1.1rem", marginTop: 16 }}>Порядок кликов</h2>
+      <NumberedList items={steps} />
 
       <div className={css.hintCard} role="note" aria-label="Подсказка">
         <div className={css.bulb} aria-hidden>💡</div>

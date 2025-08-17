@@ -72,6 +72,8 @@ export default function DeployGame() {
     }
 
     let state: GameState;
+    // Counts how many consecutive spawns happened without spawning the required task
+    let sinceRequired = 0;
     const resetState = () => {
       state = {
         running: false,
@@ -83,17 +85,19 @@ export default function DeployGame() {
         spawnTimer: null,
         speedLevel: 0,
       };
+      sinceRequired = 0;
       updateUI();
       clearTasks();
     };
 
-    const fmt = (s: number) => s.toFixed(1).replace(/\.0$/, '');
     function updateUI() {
-      hudTime.textContent = `${fmt(Math.max(0, state.timeLeft))}s`;
+      // Show time as whole seconds to avoid flickering from milliseconds
+      hudTime.textContent = `${Math.max(0, Math.ceil(state.timeLeft))}s`;
       timeFill.style.width = `${((1 - state.timeLeft / GAME_SECONDS) * 100).toFixed(2)}%`;
       const next = CHECKLIST[state.cycleStep];
       hudNext.textContent = next.label;
-      comboEl.textContent = `x${state.combo}`;
+      // Show combo rounded to 1 decimal place
+      comboEl.textContent = `x${state.combo.toFixed(1)}`;
     }
 
     function showToast(msg: string) {
@@ -109,7 +113,22 @@ export default function DeployGame() {
     function spawnTask() {
       if (!state.running) return;
       const { spawnMs, fallSec } = currentDifficulty();
-      const t = CHECKLIST[Math.floor(Math.random() * CHECKLIST.length)];
+
+      // Ensure that at least each third spawned task is the required one
+      const needed = CHECKLIST[state.cycleStep];
+      let t = CHECKLIST[Math.floor(Math.random() * CHECKLIST.length)];
+      if (sinceRequired >= 2) {
+        // Force required task if we haven't seen it in the last two spawns
+        t = needed;
+        sinceRequired = 0;
+      } else {
+        if (t.key === needed.key) {
+          sinceRequired = 0;
+        } else {
+          sinceRequired += 1;
+        }
+      }
+
       const el = document.createElement('button');
       el.className = 'task';
       el.style.left = `${randomBetween(14, gameEl.clientWidth - 14)}px`;
@@ -248,9 +267,7 @@ export default function DeployGame() {
     };
     window.addEventListener('keydown', keydown);
 
-    alert(
-        'Click falling tasks in this exact order:\n\n1) Get requirements 📝\n2) Create branch 🌿\n3) Write code 💻\n4) Write tests 🧪\n5) Fix bugs 🐛\n6) Resolve conflicts ⚔️\n7) Get MR approvals ✅\n8) Merge to main 🔀\n9) Deploy to prod 🚀\n\nWrong click = −5 seconds. Finish as many deploy cycles as you can in 60 seconds!'
-      );
+    // Start immediately without alerts; steps are shown on the Rules screen
     startGame();
 
     return () => {
