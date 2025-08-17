@@ -1,0 +1,63 @@
+.bar {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background: var(--bg);
+  color: var(--text);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  font-weight: 600;
+}
+
+.badgeDanger {
+  color: var(--bad);
+  border-color: rgba(224, 69, 69, 0.55);
+}
+
+.icon {
+  opacity: 0.9;
+}
+
+.text {
+  font-variant-numeric: tabular-nums;
+}
+
+.delta {
+  margin-left: 8px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: deltaPop 0.8s ease forwards;
+}
+
+.deltaPos {
+  color: var(--good);
+}
+
+.deltaNeg {
+  color: var(--bad);
+}
+
+@keyframes deltaPop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

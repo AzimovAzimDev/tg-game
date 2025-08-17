@@ -1,0 +1,17 @@
+:root {
+  --bg: var(--tg-theme-bg_color, #0f1115);
+  --text: var(--tg-theme-text-color, #e5e7eb);
+  --muted: rgba(229, 231, 235, 0.85);
+  --card: #1c222b;
+  --border: #2a2f36;
+  --pill: #ffffff;
+  --good: #29d17e;
+  --bad: #e04545;
+}
+
+.game-screen {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text);
+}
+
