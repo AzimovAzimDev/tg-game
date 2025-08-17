@@ -4,17 +4,17 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%;}
-body{margin:0;background:radial-gradient(1200px 900px at 80% -10%,#142034 0%,#0b0f14 60%);color:var(--ink);font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";}
+body{margin:0;background:radial-gradient(1200px 900px at 80% -10%,#142034 0%,#0b0f14 60%);color:var(--ink);font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";touch-action:manipulation;}
 
-.wrap{max-width:1100px;margin-inline:auto;padding:16px;display:grid;gap:12px;grid-template-columns:260px 1fr;}
+.wrap{max-width:1100px;margin-inline:auto;padding:16px;display:grid;gap:12px;grid-template-columns:260px 1fr;grid-template-areas:"header header" "sidebar game";}
 
-header{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+header{grid-area:header;display:flex;align-items:center;gap:14px}
 header h1{font-weight:800;letter-spacing:.3px;font-size:clamp(20px,2vw,26px);margin:0}
 .badge{padding:.25rem .5rem;border:1px solid #234; background:#0d1626;border-radius:999px;color:var(--muted);font-size:.8rem}
 
 .panel{background:linear-gradient(180deg,var(--panel),#0c1320);border:1px solid #1a2740;border-radius:16px;padding:14px;box-shadow:var(--glow)}
 
-.sidebar{display:grid;gap:10px;align-content:start}
+.sidebar{grid-area:sidebar;display:grid;gap:10px;align-content:start}
 .stat{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;padding:10px;border-radius:12px;background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid #1b2b44}
 .stat small{color:var(--muted)}
 
@@ -26,7 +26,7 @@ button.primary{background:linear-gradient(180deg,#2ea7ff,#1e90ff);color:white;fo
 button.secondary{background:#0f1a2b;border:1px solid #21324f;color:#bcd; padding:.6rem .9rem;border-radius:10px;cursor:pointer}
 button:disabled{opacity:.65;cursor:not-allowed}
 
-.game{position:relative;overflow:hidden;min-height:580px;border-radius:16px;background:
+.game{grid-area:game;position:relative;overflow:hidden;min-height:580px;border-radius:16px;background:
   radial-gradient(1200px 600px at -30% -50%, rgba(125,211,252,.05), transparent 60%),
   radial-gradient(900px 600px at 130% -30%, rgba(239,68,68,.06), transparent 50%),
   linear-gradient(180deg,#0c1322,#0a0f19);
@@ -70,6 +70,10 @@ button:disabled{opacity:.65;cursor:not-allowed}
 .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#0a1220;border:1px solid #1c2a46;border-bottom-width:3px;border-radius:6px;padding:2px 6px}
 
 @media (max-width:880px){
-  .wrap{grid-template-columns:1fr}
+  .wrap{grid-template-columns:1fr;grid-template-areas:"header" "game" "sidebar";}
   .game{min-height:520px}
+}
+
+@media (max-width:600px){
+  .game{min-height:70vh}
 }

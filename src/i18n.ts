@@ -7,7 +7,6 @@ i18n.use(initReactI18next).init({
       translation: {
         hello: 'Hello World',
         home: 'Home',
-        about: 'About',
       },
     },
   },

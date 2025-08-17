@@ -177,6 +177,15 @@ export default function DeployGame() {
       state.running = false;
       if (state.spawnTimer) clearTimeout(state.spawnTimer);
       finalScore.textContent = String(state.score);
+      // update stats in localStorage
+      const raw = localStorage.getItem('deployGameStats');
+      const stats = raw
+        ? JSON.parse(raw)
+        : { gamesPlayed: 0, bestScore: 0, lastScore: 0 };
+      stats.gamesPlayed += 1;
+      stats.lastScore = state.score;
+      stats.bestScore = Math.max(stats.bestScore, state.score);
+      localStorage.setItem('deployGameStats', JSON.stringify(stats));
       finish.classList.add('show');
       endTitle.textContent = endTitlePhrases[Math.floor(Math.random() * endTitlePhrases.length)];
       nextBox.style.opacity = '0.75';
