@@ -22,13 +22,8 @@ export default function DeployGame() {
     const CYCLE_BONUS = 500;
 
     const gameEl = document.getElementById('game') as HTMLDivElement;
-    const startBtn = document.getElementById('startBtn') as HTMLButtonElement;
-    const howBtn = document.getElementById('howBtn') as HTMLButtonElement;
-    const scoreEl = document.getElementById('score') as HTMLElement;
-    const timeEl = document.getElementById('time') as HTMLElement;
     const hudTime = document.getElementById('hudTime') as HTMLElement;
     const timeFill = document.getElementById('timeFill') as HTMLDivElement;
-    const nextLabel = document.getElementById('nextLabel') as HTMLElement;
     const hudNext = document.getElementById('hudNext') as HTMLElement;
     const comboEl = document.getElementById('combo') as HTMLElement;
     const toast = document.getElementById('toast') as HTMLDivElement;
@@ -37,7 +32,6 @@ export default function DeployGame() {
     const finalScore = document.getElementById('finalScore') as HTMLElement;
     const playAgain = document.getElementById('playAgain') as HTMLButtonElement;
     const shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
-    const nextBox = document.getElementById('nextBox') as HTMLDivElement;
 
     let audioCtx: AudioContext | undefined;
     const beep = (freq = 440, dur = 0.08, type: OscillatorType = 'sine', gain = 0.03) => {
@@ -95,12 +89,9 @@ export default function DeployGame() {
 
     const fmt = (s: number) => s.toFixed(1).replace(/\.0$/, '');
     function updateUI() {
-      scoreEl.textContent = String(state.score);
-      timeEl.textContent = String(Math.max(0, Math.ceil(state.timeLeft)));
       hudTime.textContent = `${fmt(Math.max(0, state.timeLeft))}s`;
       timeFill.style.width = `${((1 - state.timeLeft / GAME_SECONDS) * 100).toFixed(2)}%`;
       const next = CHECKLIST[state.cycleStep];
-      nextLabel.textContent = next.label;
       hudNext.textContent = next.label;
       comboEl.textContent = `x${state.combo}`;
     }
@@ -193,7 +184,6 @@ export default function DeployGame() {
       localStorage.setItem('deployGameStats', JSON.stringify(stats));
       finish.classList.add('show');
       endTitle.textContent = endTitlePhrases[Math.floor(Math.random() * endTitlePhrases.length)];
-      nextBox.style.opacity = '0.75';
     }
 
     function tick() {
@@ -214,7 +204,6 @@ export default function DeployGame() {
     function startGame() {
       resetState();
       finish.classList.remove('show');
-      nextBox.style.opacity = '1';
       state.running = true;
       state.t0 = performance.now();
       requestAnimationFrame(tick);
@@ -240,12 +229,6 @@ export default function DeployGame() {
       'Monolith trembled, microservices cheered.',
     ];
 
-    startBtn.addEventListener('click', startGame);
-    howBtn.addEventListener('click', () => {
-      alert(
-        'Click falling tasks in this exact order:\n\n1) Get requirements 📝\n2) Create branch 🌿\n3) Write code 💻\n4) Write tests 🧪\n5) Fix bugs 🐛\n6) Resolve conflicts ⚔️\n7) Get MR approvals ✅\n8) Merge to main 🔀\n9) Deploy to prod 🚀\n\nWrong click = −5 seconds. Finish as many deploy cycles as you can in 60 seconds!'
-      );
-    });
     playAgain.addEventListener('click', startGame);
     shareBtn.addEventListener('click', async () => {
       const text = `Deploy or Die — I scored ${state.score} points in 60s! Next up: ${CHECKLIST[state.cycleStep].label}`;
@@ -265,7 +248,10 @@ export default function DeployGame() {
     };
     window.addEventListener('keydown', keydown);
 
-    resetState();
+    alert(
+        'Click falling tasks in this exact order:\n\n1) Get requirements 📝\n2) Create branch 🌿\n3) Write code 💻\n4) Write tests 🧪\n5) Fix bugs 🐛\n6) Resolve conflicts ⚔️\n7) Get MR approvals ✅\n8) Merge to main 🔀\n9) Deploy to prod 🚀\n\nWrong click = −5 seconds. Finish as many deploy cycles as you can in 60 seconds!'
+      );
+    startGame();
 
     return () => {
       window.removeEventListener('keydown', keydown);
@@ -274,46 +260,6 @@ export default function DeployGame() {
 
   return (
     <div className="wrap">
-
-      <aside className="sidebar">
-        <div className="panel">
-          <div className="stat">
-            <div>
-              <strong>Score</strong>
-              <br />
-              <small>Total points</small>
-            </div>
-            <div id="score">0</div>
-          </div>
-          <div className="stat">
-            <div>
-              <strong>Time</strong>
-              <br />
-              <small>Seconds left</small>
-            </div>
-            <div id="time">60</div>
-          </div>
-          <div className="next" id="nextBox">
-            Next: <strong id="nextLabel">Get requirements 📝</strong>
-          </div>
-          <div className="legend" style={{ marginTop: '8px' }}>
-            <div>
-              <span className="dot ok" /> correct click = +points
-            </div>
-            <div>
-              <span className="dot bad" /> wrong click = −5s
-            </div>
-          </div>
-          <div className="controls" style={{ marginTop: '10px' }}>
-            <button className="primary" id="startBtn">
-              Start (or press <span className="kbd">Space</span>)
-            </button>
-            <button className="secondary" id="howBtn">
-              How to play
-            </button>
-          </div>
-        </div>
-      </aside>
 
       <main className="panel game" id="game">
         <div className="hud">
