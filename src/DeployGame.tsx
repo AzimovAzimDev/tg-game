@@ -299,12 +299,24 @@ export default function DeployGame() {
       p.x = clamp(p.x, p.w / 2, state.playW - p.w / 2);
     }
 
-    function intersectsPlatform(b: FallingBlock) {
+    function intersectsCatchSurface(b: FallingBlock) {
       const p = state.platform;
       const blockBottom = b.y + b.h / 2;
-      const platformTop = p.y;
+      // Determine catch surface: top of last stacked block if any, otherwise platform top
+      let surfaceY = p.y;
+      let halfWidth: number;
+      if (state.stacked.length > 0) {
+        // Compute current top of stack (platform.y minus sum of stacked heights)
+        let totalH = 0;
+        for (let i = 0; i < state.stacked.length; i++) totalH += state.stacked[i].h;
+        surfaceY = p.y - totalH;
+        const top = state.stacked[state.stacked.length - 1];
+        halfWidth = (top.w) / 2; // use last block width as catch width
+      } else {
+        halfWidth = p.w / 2; // no stack yet: use platform width
+      }
       const centerX = b.x;
-      const caught = blockBottom >= platformTop && Math.abs(centerX - p.x) <= p.w / 2;
+      const caught = blockBottom >= surfaceY && Math.abs(centerX - p.x) <= halfWidth;
       return caught;
     }
 
@@ -525,7 +537,7 @@ export default function DeployGame() {
         b.x = clamp(b.x + b.vx * dt, b.w / 2, state.playW - b.w / 2);
         b.y += b.vy * dt;
 
-        const caught = intersectsPlatform(b);
+        const caught = intersectsCatchSurface(b);
         const missed = b.y - b.h / 2 > state.playH; // passed bottom
 
         if (caught) {
