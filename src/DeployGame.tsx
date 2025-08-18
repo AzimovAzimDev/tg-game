@@ -21,7 +21,8 @@ export default function DeployGame() {
     type BlockKind =
       | { type: 'step'; step: StepId }
       | { type: 'bad'; name: 'bug' | 'infra' }
-      | { type: 'heal'; name: 'fix-bug' | 'fix-infra' };
+      | { type: 'heal'; name: 'fix-bug' | 'fix-infra' }
+      | { type: 'time' };
 
     type FallingBlock = {
       id: string;
@@ -49,7 +50,7 @@ export default function DeployGame() {
       platformWidth: 240,
       badEverySecMin: 12,
       maxActiveBlocks: 12,
-      timeBonus: { correct: 1000, heal: 2000 },
+      timeBonus: { correct: 1000, heal: 2000, time: 10000 },
       timePenalty: { wrong: 5000, bad: 8000 },
       points: { base: 100, speedWindowMs: 1000, speedBonus: 20, finishPerSec: 5 },
       comboTiers: [2, 4, 6, 8],
@@ -160,6 +161,7 @@ export default function DeployGame() {
       t0: number; // last frame timestamp
       playW: number;
       playH: number;
+      timeDropCounter: number; // counts normal spawns to drop a time power-up every 12
     }
 
     let state: GameState;
@@ -200,6 +202,7 @@ export default function DeployGame() {
         t0: performance.now(),
         playW: 0,
         playH: 0,
+        timeDropCounter: 0,
       };
       resizeCanvas();
       // center platform
@@ -292,12 +295,39 @@ export default function DeployGame() {
         displayEmoji = step.emoji; // used for consistency even though we can derive it later
       } else if (kind.type === 'bad') {
         displayEmoji = failEmojis[Math.floor(Math.random() * failEmojis.length)];
-      } else {
+      } else if (kind.type === 'heal') {
         displayEmoji = healEmojis[Math.floor(Math.random() * healEmojis.length)];
+      } else if (kind.type === 'time') {
+        displayEmoji = '⏳';
       }
 
       const block: FallingBlock = { id: Math.random().toString(36).slice(2), kind, x, y, vx, vy, w, h, displayEmoji };
       state.blocks.push(block);
+      // Count normal spawns and drop an additional time power-up every 12 blocks
+      state.timeDropCounter++;
+      if (state.timeDropCounter >= 12) {
+        state.timeDropCounter = 0;
+        if (state.blocks.length < params.maxActiveBlocks) {
+          const timeKind: BlockKind = { type: 'time' };
+          const w2 = w; const h2 = h;
+          const x2 = rand(w2 / 2, state.playW - w2 / 2);
+          const y2 = y - h2 - 8;
+          const vx2 = rand(-20, 20);
+          const vy2 = state.fallSpeed;
+          const timeBlock: FallingBlock = {
+            id: Math.random().toString(36).slice(2),
+            kind: timeKind,
+            x: x2,
+            y: y2,
+            vx: vx2,
+            vy: vy2,
+            w: w2,
+            h: h2,
+            displayEmoji: '⏳',
+          };
+          state.blocks.push(timeBlock);
+        }
+      }
     }
 
     function easePlatform() {
@@ -349,8 +379,18 @@ export default function DeployGame() {
       // Blocked mechanic removed. Heal always helps regardless of state.
       if (kind.type === 'heal') {
         state.score += 10;
+        state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.heal);
         beep(600, 0.08, 'sine', 0.03);
-        updateUI('+10', '#2ecc71');
+        const healSec = Math.round(params.timeBonus.heal / 1000);
+        updateUI(`+10 +${healSec}s`, '#2ecc71');
+        return;
+      }
+
+      if (kind.type === 'time') {
+        state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.time);
+        beep(700, 0.08, 'sine', 0.03);
+        const addSec = Math.round(params.timeBonus.time / 1000);
+        updateUI(`+${addSec}s`, '#2ecc71');
         return;
       }
 
@@ -518,6 +558,16 @@ export default function DeployGame() {
         ctx.strokeStyle = '#2ecc71';
         roundRect(ctx, x, y, w, h, 8, false, true);
         ctx.shadowBlur = 0;
+      } else if (kind.type === 'time') {
+        // Cyan border/glow for time bonus
+        const t = performance.now() / 1000;
+        const pulse = (Math.sin(t * 4) + 1) / 2;
+        ctx.shadowColor = 'rgba(0, 209, 255, 0.7)';
+        ctx.shadowBlur = 6 + 8 * pulse;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#00d1ff';
+        roundRect(ctx, x, y, w, h, 8, false, true);
+        ctx.shadowBlur = 0;
       }
 
       // Icon only (no text description)
@@ -539,7 +589,9 @@ export default function DeployGame() {
         return { text: step.label, emoji: step.emoji };
       }
       if (kind.type === 'bad') return { text: kind.name === 'bug' ? 'Bug' : 'Infra outage', emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
-      return { text: kind.name === 'fix-bug' ? 'Fix bug' : 'Fix infra', emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
+      if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? 'Fix bug' : 'Fix infra', emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
+      // time bonus
+      return { text: 'Time', emoji: '⏳' };
     }
 
     function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number, fill: boolean, stroke: boolean) {
