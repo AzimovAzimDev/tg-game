@@ -358,8 +358,7 @@ export default function DeployGame() {
         const goal = STEPS[state.goalIndex].id;
         if (kind.step === goal) {
           // Correct catch
-          // Place to stack near where it was caught; compress previous visuals
-          for (let i = 0; i < state.stacked.length; i++) state.stacked[i].h = Math.round(params.blockSize.h * params.blockSize.stackCompression);
+          // Place to stack near where it was caught; preserve original size of previous blocks (no compression)
 
           // Determine support center and half width
           const p = state.platform;
@@ -396,6 +395,8 @@ export default function DeployGame() {
             state.score += bonus;
             chord([660, 880, 1320], 0.22);
             showToast('Cycle complete!');
+            // Clear the stack after completing Deploy to make room for next cycle
+            state.stacked = [];
             // Slightly increase difficulty by reducing spawn interval a bit
             state.spawnIntervalMs = Math.max(params.spawnIntervalMin, state.spawnIntervalMs - 60);
             updateUI(`+${bonus}`, '#2ecc71');
@@ -505,6 +506,16 @@ export default function DeployGame() {
         ctx.shadowBlur = 8 + 12 * pulse;
         ctx.lineWidth = 2;
         ctx.strokeStyle = 'rgba(231, 76, 60, 0.9)';
+        roundRect(ctx, x, y, w, h, 8, false, true);
+        ctx.shadowBlur = 0;
+      } else if (kind.type === 'heal') {
+        // Green border with gentle glow for good (heal) blocks
+        const t = performance.now() / 1000;
+        const pulse = (Math.sin(t * 4) + 1) / 2; // softer pulse
+        ctx.shadowColor = 'rgba(46, 204, 113, 0.7)';
+        ctx.shadowBlur = 6 + 8 * pulse;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#2ecc71';
         roundRect(ctx, x, y, w, h, 8, false, true);
         ctx.shadowBlur = 0;
       }
