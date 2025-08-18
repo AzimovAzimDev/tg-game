@@ -138,7 +138,7 @@ export default function DeployGame() {
 
     // Game state
     interface Platform { x: number; w: number; y: number; targetX: number }
-    interface Stacked { kind: BlockKind; w: number; h: number }
+    interface Stacked { kind: BlockKind; w: number; h: number; dx: number }
     type Blocked = null | 'bug' | 'infra';
 
     interface GameState {
@@ -305,18 +305,21 @@ export default function DeployGame() {
       // Determine catch surface: top of last stacked block if any, otherwise platform top
       let surfaceY = p.y;
       let halfWidth: number;
+      let supportCenterX: number = p.x; // horizontal center of support surface
       if (state.stacked.length > 0) {
         // Compute current top of stack (platform.y minus sum of stacked heights)
         let totalH = 0;
         for (let i = 0; i < state.stacked.length; i++) totalH += state.stacked[i].h;
         surfaceY = p.y - totalH;
         const top = state.stacked[state.stacked.length - 1];
-        halfWidth = (top.w) / 2; // use last block width as catch width
+        halfWidth = top.w / 2; // use last block width as catch width
+        supportCenterX = p.x + top.dx; // top block center including its offset
       } else {
         halfWidth = p.w / 2; // no stack yet: use platform width
+        supportCenterX = p.x;
       }
-      const centerX = b.x;
-      const caught = blockBottom >= surfaceY && Math.abs(centerX - p.x) <= halfWidth;
+      // A catch occurs when the block bottom reaches the surface Y and its center is horizontally within support bounds
+      const caught = blockBottom >= surfaceY && Math.abs(b.x - supportCenterX) <= halfWidth;
       return caught;
     }
 
@@ -356,9 +359,28 @@ export default function DeployGame() {
         const goal = STEPS[state.goalIndex].id;
         if (kind.step === goal) {
           // Correct catch
-          // Place to stack; compress previous visuals
+          // Place to stack near where it was caught; compress previous visuals
           for (let i = 0; i < state.stacked.length; i++) state.stacked[i].h = Math.round(params.blockSize.h * params.blockSize.stackCompression);
-          state.stacked.push({ kind, w: params.blockSize.w, h: params.blockSize.h });
+
+          // Determine support center and half width
+          const p = state.platform;
+          let supportCenterX = p.x;
+          let supportHalf = p.w / 2;
+          if (state.stacked.length > 0) {
+            const top = state.stacked[state.stacked.length - 1];
+            supportCenterX = p.x + top.dx;
+            supportHalf = top.w / 2;
+          }
+
+          // Desired center based on current falling block position, clamped to support with slight jitter
+          const desiredX = b.x;
+          const margin = 4; // keep a small margin so it looks supported
+          const clampedX = clamp(desiredX, supportCenterX - (supportHalf - margin), supportCenterX + (supportHalf - margin));
+          const jitter = rand(-3, 3); // subtle inaccuracy to preserve scatter
+          const finalX = clamp(clampedX + jitter, supportCenterX - (supportHalf - margin), supportCenterX + (supportHalf - margin));
+          const dx = finalX - p.x;
+
+          state.stacked.push({ kind, w: params.blockSize.w, h: params.blockSize.h, dx });
           // Score: base * combo multiplier
           const mult = comboMultiplier(state.combo);
           const add = Math.floor(params.points.base * mult);
@@ -435,12 +457,13 @@ export default function DeployGame() {
       ctx.fillStyle = '#0b0f1a';
       ctx.fillRect(0, 0, w, h);
 
-      // Draw stack from bottom up aligned to platform center
+      // Draw stack from bottom up using each block's offset from platform center
       let stackY = state.platform.y;
       for (let i = 0; i < state.stacked.length; i++) {
         const s = state.stacked[i];
         stackY -= s.h;
-        drawBlock(state.platform.x, stackY + s.h / 2, s.w, s.h, s.kind, 0.85);
+        const cx = state.platform.x + s.dx;
+        drawBlock(cx, stackY + s.h / 2, s.w, s.h, s.kind, 0.85);
       }
 
       // Draw platform
