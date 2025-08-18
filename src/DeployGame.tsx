@@ -162,6 +162,7 @@ export default function DeployGame() {
     }
 
     let state: GameState;
+    const keys = { left: false, right: false };
 
     function resizeCanvas() {
       const rect = gameEl.getBoundingClientRect();
@@ -536,6 +537,10 @@ export default function DeployGame() {
           continue;
         }
       }
+      const moveSpeed = 400;
+      if (keys.left) state.platform.targetX -= moveSpeed * dt;
+      if (keys.right) state.platform.targetX += moveSpeed * dt;
+      state.platform.targetX = clamp(state.platform.targetX, state.platform.w / 2, state.playW - state.platform.w / 2);
 
       easePlatform();
       updateUI();
@@ -565,18 +570,39 @@ export default function DeployGame() {
 
     // Listeners
     window.addEventListener('resize', resizeCanvas);
-    gameEl.addEventListener('pointermove', onPointerMove as any);
-    gameEl.addEventListener('touchmove', onPointerMove as any, { passive: true });
+    gameEl.addEventListener('pointermove', onPointerMove as EventListener);
+    gameEl.addEventListener('touchmove', onPointerMove as EventListener, { passive: true });
 
     const keydown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         e.preventDefault();
         if (!state.running) startGame();
       }
-      if (e.code === 'ArrowLeft') state.platform.targetX -= 40;
-      if (e.code === 'ArrowRight') state.platform.targetX += 40;
+      if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        keys.left = true;
+      }
+      if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        keys.right = true;
+      }
+    };
+
+    const keyup = (e: KeyboardEvent) => {
+      if (e.code === 'ArrowLeft') keys.left = false;
+      if (e.code === 'ArrowRight') keys.right = false;
     };
     window.addEventListener('keydown', keydown);
+    window.addEventListener('keyup', keyup);
+
+    function onDeviceOrientation(e: DeviceOrientationEvent) {
+      if (e.gamma == null) return;
+      const maxTilt = 30; // degrees
+      const fraction = clamp(e.gamma, -maxTilt, maxTilt) / maxTilt;
+      const half = state.playW / 2;
+      state.platform.targetX = clamp(half + fraction * half, state.platform.w / 2, state.playW - state.platform.w / 2);
+    }
+    window.addEventListener('deviceorientation', onDeviceOrientation);
 
     playAgain.addEventListener('click', startGame);
     shareBtn.addEventListener('click', async () => {
@@ -596,8 +622,10 @@ export default function DeployGame() {
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('keydown', keydown);
-      gameEl.removeEventListener('pointermove', onPointerMove as any);
-      gameEl.removeEventListener('touchmove', onPointerMove as any);
+      window.removeEventListener('keyup', keyup);
+      window.removeEventListener('deviceorientation', onDeviceOrientation);
+      gameEl.removeEventListener('pointermove', onPointerMove as EventListener);
+      gameEl.removeEventListener('touchmove', onPointerMove as EventListener);
     };
   }, []);
 
