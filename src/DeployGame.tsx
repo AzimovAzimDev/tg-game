@@ -44,7 +44,7 @@ export default function DeployGame() {
       fallSpeedStart: 180,
       fallSpeedMax: 300,
       fallRampPct: 0.06,
-      blockSize: { w: 132, h: 72, stackCompression: 0.65 },
+      blockSize: { w: 60, h: 60, stackCompression: 0.65 },
       platformWidth: 240,
       badEverySecMin: 12,
       maxActiveBlocks: 12,
@@ -176,7 +176,8 @@ export default function DeployGame() {
       state.playH = h;
       // Place platform 24px from bottom
       state.platform.y = h - 24;
-      state.platform.w = params.platformWidth;
+      // Platform should be 1.5x the block width
+      state.platform.w = Math.round(params.blockSize.w * 1.5);
     }
 
     function resetState() {
@@ -194,7 +195,7 @@ export default function DeployGame() {
         spawnTimerMs: params.spawnIntervalStart,
         fallSpeed: params.fallSpeedStart,
         spawnIntervalMs: params.spawnIntervalStart,
-        platform: { x: 0, y: 0, w: params.platformWidth, targetX: 0 },
+        platform: { x: 0, y: 0, w: Math.round(params.blockSize.w * 1.5), targetX: 0 },
         t0: performance.now(),
         playW: 0,
         playH: 0,
@@ -458,15 +459,15 @@ export default function DeployGame() {
       // Body
       ctx.fillStyle = '#1e2a44';
       roundRect(ctx, x, y, w, h, 8, true, false);
-      // Label and emoji
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 14px system-ui, sans-serif';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
+      // Icon only (no text description)
       const label = blockLabel(kind);
-      ctx.fillText(label.text, x + 12, y + h / 2);
-      ctx.textAlign = 'right';
-      ctx.fillText(label.emoji, x + w - 10, y + h / 2);
+      ctx.fillStyle = '#ffffff';
+      // Choose font size proportional to block size for clear emoji rendering
+      const fontSize = Math.floor(Math.min(w, h) * 0.5);
+      ctx.font = `bold ${fontSize}px system-ui, apple color emoji, segoe ui emoji, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label.emoji, cx, cy);
       ctx.restore();
     }
 
