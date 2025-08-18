@@ -32,6 +32,7 @@ export default function DeployGame() {
       vy: number;
       w: number;
       h: number;
+      displayEmoji?: string; // preselected emoji for this block (used for bad/heal variety)
     };
 
     // Suggested parameters
@@ -250,33 +251,26 @@ export default function DeployGame() {
       };
       const bag: BlockKind[] = [];
 
-      if (state.blocked) {
-        // heavily bias matching heal
-        const healKind: BlockKind = { type: 'heal', name: state.blocked === 'bug' ? 'fix-bug' : 'fix-infra' };
-        push(bag, healKind, Math.floor(params.healBiasWhenBlocked * 100));
-        // small chance for others
+      // Not using blocked mechanic for spawn bias anymore; always mix types
+      // Bias goal and a bit of neighbors
+      push(bag, { type: 'step', step: goal }, 50);
+      const next1 = STEPS[(state.goalIndex + 1) % STEPS.length].id;
+      const next2 = STEPS[(state.goalIndex + 2) % STEPS.length].id;
+      push(bag, { type: 'step', step: next1 }, 12);
+      push(bag, { type: 'step', step: next2 }, 8);
+      // Some random decoys
+      for (const s of STEPS) if (s.id !== goal && s.id !== next1 && s.id !== next2) push(bag, { type: 'step', step: s.id }, 4);
+      // Mix in heals occasionally
+      push(bag, { type: 'heal', name: 'fix-bug' }, 6);
+      push(bag, { type: 'heal', name: 'fix-infra' }, 6);
+      // Occasionally bad (a bit dynamic by timing)
+      const nowMs = state.elapsedMs;
+      if (nowMs - state.lastBadAtMs >= params.badEverySecMin * 1000) {
+        push(bag, { type: 'bad', name: 'bug' }, 12);
+        push(bag, { type: 'bad', name: 'infra' }, 12);
+      } else {
         push(bag, { type: 'bad', name: 'bug' }, 5);
         push(bag, { type: 'bad', name: 'infra' }, 5);
-        // allow some decoy steps
-        for (const s of STEPS) push(bag, { type: 'step', step: s.id }, 2);
-      } else {
-        // Not blocked: bias goal and next ones
-        push(bag, { type: 'step', step: goal }, 50);
-        const next1 = STEPS[(state.goalIndex + 1) % STEPS.length].id;
-        const next2 = STEPS[(state.goalIndex + 2) % STEPS.length].id;
-        push(bag, { type: 'step', step: next1 }, 12);
-        push(bag, { type: 'step', step: next2 }, 8);
-        // Some random decoys
-        for (const s of STEPS) if (s.id !== goal && s.id !== next1 && s.id !== next2) push(bag, { type: 'step', step: s.id }, 4);
-        // Occasionally bad
-        const nowMs = state.elapsedMs;
-        if (nowMs - state.lastBadAtMs >= params.badEverySecMin * 1000) {
-          push(bag, { type: 'bad', name: 'bug' }, 12);
-          push(bag, { type: 'bad', name: 'infra' }, 12);
-        } else {
-          push(bag, { type: 'bad', name: 'bug' }, 3);
-          push(bag, { type: 'bad', name: 'infra' }, 3);
-        }
       }
 
       const kind = bag[Math.floor(Math.random() * bag.length)];
@@ -288,7 +282,21 @@ export default function DeployGame() {
       const y = -h - 4;
       const vx = rand(-20, 20);
       const vy = state.fallSpeed;
-      const block: FallingBlock = { id: Math.random().toString(36).slice(2), kind, x, y, vx, vy, w, h };
+
+      // Preselect emoji per block
+      const failEmojis = ['💩','🤡','🦀','🍄','💥','🔥','🚧','⚠️'];
+      const healEmojis = ['🧠','👀','🍓','🔨','💊','🎁','❤️'];
+      let displayEmoji: string | undefined;
+      if (kind.type === 'step') {
+        const step = STEPS.find(s => s.id === kind.step)!;
+        displayEmoji = step.emoji; // used for consistency even though we can derive it later
+      } else if (kind.type === 'bad') {
+        displayEmoji = failEmojis[Math.floor(Math.random() * failEmojis.length)];
+      } else {
+        displayEmoji = healEmojis[Math.floor(Math.random() * healEmojis.length)];
+      }
+
+      const block: FallingBlock = { id: Math.random().toString(36).slice(2), kind, x, y, vx, vy, w, h, displayEmoji };
       state.blocks.push(block);
     }
 
@@ -330,28 +338,19 @@ export default function DeployGame() {
       state.blocks = state.blocks.filter(x => x.id !== b.id);
 
       if (kind.type === 'bad') {
-        state.blocked = kind.name === 'bug' ? 'bug' : 'infra';
+        // Bad catch: no longer blocks the player; just score penalty
         state.combo = 1;
-        state.timeLeftMs = Math.max(0, state.timeLeftMs - params.timePenalty.bad);
+        state.score -= 10;
         errorBuzz();
-        updateUI('−8s', '#e74c3c');
+        updateUI('−10', '#e74c3c');
         return;
       }
 
-      if (state.blocked) {
-        if (kind.type === 'heal' && ((state.blocked === 'bug' && kind.name === 'fix-bug') || (state.blocked === 'infra' && kind.name === 'fix-infra'))) {
-          // Clear blocked
-          state.blocked = null;
-          state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.heal);
-          beep(600, 0.08, 'sine', 0.03);
-          updateUI('+2s', '#2ecc71');
-        } else {
-          // Wrong during blocked
-          state.combo = 1;
-          state.timeLeftMs = Math.max(0, state.timeLeftMs - params.timePenalty.wrong);
-          errorBuzz();
-          updateUI('−5s', '#e74c3c');
-        }
+      // Blocked mechanic removed. Heal always helps regardless of state.
+      if (kind.type === 'heal') {
+        state.score += 10;
+        beep(600, 0.08, 'sine', 0.03);
+        updateUI('+10', '#2ecc71');
         return;
       }
 
@@ -409,11 +408,8 @@ export default function DeployGame() {
           updateUI('−5s', '#e74c3c');
         }
       } else if (kind.type === 'heal') {
-        // Heal caught while not blocked => wrong
-        state.combo = 1;
-        state.timeLeftMs = Math.max(0, state.timeLeftMs - params.timePenalty.wrong);
-        errorBuzz();
-        updateUI('−5s', '#e74c3c');
+        // Already handled above; keep for safety in case of future changes
+        return;
       }
     }
 
@@ -474,7 +470,7 @@ export default function DeployGame() {
 
       // Draw falling blocks
       for (const b of state.blocks) {
-        drawBlock(b.x, b.y, b.w, b.h, b.kind, 1);
+        drawBlock(b.x, b.y, b.w, b.h, b.kind, 1, b.displayEmoji);
       }
 
       // HUD overlay: blocked icon
@@ -486,7 +482,7 @@ export default function DeployGame() {
       }
     }
 
-    function drawBlock(cx: number, cy: number, w: number, h: number, kind: BlockKind, alpha = 1) {
+    function drawBlock(cx: number, cy: number, w: number, h: number, kind: BlockKind, alpha = 1, emojiOverride?: string) {
       ctx.save();
       ctx.globalAlpha = alpha;
       const x = cx - w / 2;
@@ -494,15 +490,35 @@ export default function DeployGame() {
       // Body
       ctx.fillStyle = '#1e2a44';
       roundRect(ctx, x, y, w, h, 8, true, false);
+
+      // Borders and effects by kind
+      if (kind.type === 'step') {
+        // Blue bordered for steps
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#3498db';
+        roundRect(ctx, x, y, w, h, 8, false, true);
+      } else if (kind.type === 'bad') {
+        // Red pulsing glow for bad
+        const t = performance.now() / 1000;
+        const pulse = (Math.sin(t * 6) + 1) / 2; // 0..1
+        ctx.shadowColor = 'rgba(231, 76, 60, 0.9)';
+        ctx.shadowBlur = 8 + 12 * pulse;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(231, 76, 60, 0.9)';
+        roundRect(ctx, x, y, w, h, 8, false, true);
+        ctx.shadowBlur = 0;
+      }
+
       // Icon only (no text description)
       const label = blockLabel(kind);
+      const emoji = emojiOverride || label.emoji;
       ctx.fillStyle = '#ffffff';
       // Choose font size proportional to block size for clear emoji rendering
       const fontSize = Math.floor(Math.min(w, h) * 0.5);
       ctx.font = `bold ${fontSize}px system-ui, apple color emoji, segoe ui emoji, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(label.emoji, cx, cy);
+      ctx.fillText(emoji, cx, cy);
       ctx.restore();
     }
 
