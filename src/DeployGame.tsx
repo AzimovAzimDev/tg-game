@@ -448,9 +448,6 @@ export default function DeployGame() {
           errorBuzz();
           updateUI('−5s', '#e74c3c');
         }
-      } else if (kind.type === 'heal') {
-        // Already handled above; keep for safety in case of future changes
-        return;
       }
     }
 

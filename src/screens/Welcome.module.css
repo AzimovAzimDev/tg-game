@@ -68,6 +68,11 @@
   margin: 0 4px 18px;
 }
 
+.user {
+  font-size: clamp(16px, 3.8vw, 18px);
+  margin: 0 4px 14px;
+}
+
 .cta {
   margin-top: 8px;
   width: 100%;

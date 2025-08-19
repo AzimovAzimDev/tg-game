@@ -1,16 +1,7 @@
 import { useEffect } from "react";
+import WebApp from "@twa-dev/sdk";
 import NumberedList from "../ui/NumberedList";
 import css from "./Rules.module.css";
-
-interface TelegramWebApp {
-  HapticFeedback?: {
-    impactOccurred?: (type: string) => void;
-  };
-}
-
-const tg = (
-  window as unknown as { Telegram?: { WebApp?: TelegramWebApp } }
-).Telegram?.WebApp;
 
 type Props = { onStart: () => void };
 
@@ -50,7 +41,7 @@ export default function Rules({ onStart }: Props) {
 
   const start = () => {
     try {
-      tg?.HapticFeedback?.impactOccurred?.("light");
+      WebApp.HapticFeedback?.impactOccurred?.("light");
     } catch {
       // ignore haptic errors
     }
