@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import WebApp from "@twa-dev/sdk";
+import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import styles from "../screens/Welcome.module.css";
 import Button from "../ui/Button";
@@ -12,6 +13,7 @@ export type WelcomeModalProps = {
 
 export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalProps) {
   const user = WebApp.initDataUnsafe?.user;
+  const navigate = useNavigate();
 
   const handleStart = useCallback(() => {
     try {
@@ -22,6 +24,14 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
     onStart();
     onClose();
   }, [onClose, onStart]);
+
+  const goLeaders = useCallback(() => {
+    try {
+      WebApp.HapticFeedback?.impactOccurred?.("light");
+    } catch {}
+    navigate('/leaders');
+    onClose();
+  }, [navigate, onClose]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Welcome">
@@ -45,8 +55,9 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
           пока таймер не обнулился
         </p>
 
-        <div style={{ marginTop: 8 }}>
+        <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
           <Button onClick={handleStart} aria-label="Начать игру">Начать</Button>
+          <Button variant="gray" onClick={goLeaders} aria-label="Доска лидеров">Доска лидеров</Button>
         </div>
       </div>
     </Modal>
