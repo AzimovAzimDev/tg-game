@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import Leaderboard from '../components/Leaderboard';
+import type { Entry } from '../components/Leaderboard';
 
 export default function Leaders() {
   useEffect(() => {
@@ -6,32 +8,27 @@ export default function Leaders() {
     document.body.style.background = '#1D2129';
   }, []);
 
+  const entries: Entry[] = [
+    { id: '1', name: 'Marcus Bergson', initials: 'MB', score: 324 },
+    { id: '2', name: 'Talan Bator', initials: 'TB', score: 301 },
+    { id: '3', name: 'Avatar Aang', initials: 'AA', score: 299 },
+    { id: '4', name: 'Kadin Curtis', initials: 'KC', score: 285 },
+    { id: '5', name: 'Omar Calzoni', initials: 'OC', score: 273 },
+    { id: '6', name: 'Mira Schleifer', initials: 'MS', score: 269 },
+  ];
+
   return (
     <div style={{
       minHeight: '100svh',
       background: '#1D2129',
       color: '#e5e7eb',
-      padding: 16,
-      display: 'grid',
-      placeItems: 'center'
+      position: 'relative',
     }}>
-      <div style={{
-        width: 'min(680px, 92vw)',
-        background: '#1D2129',
-        border: '1px solid #FFFFFF26',
-        borderRadius: 18,
-        padding: 20,
-        boxShadow: '0 10px 40px rgba(0,0,0,0.45)'
-      }}>
-        <h1 style={{
-          margin: '0 0 12px 0',
-          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-          fontWeight: 800,
-          fontSize: 'clamp(22px, 5.8vw, 28px)'
-        }}>Доска лидеров</h1>
-        <p style={{ color: 'rgba(229,231,235,0.75)' }}>
-          Здесь будет таблица лидеров. Скоро!
-        </p>
+        <h1 style={{ margin: 0, padding: 20 }}>Доска лидеров</h1>
+
+      {/* Leaderboard block positioned below the title */}
+      <div style={{  }}>
+        <Leaderboard entries={entries} />
       </div>
     </div>
   );

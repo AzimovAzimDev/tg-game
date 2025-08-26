@@ -75,7 +75,7 @@ button:disabled{opacity:.65;cursor:not-allowed}
 }
 
 /* --- Fullscreen game overrides to make <main id="game"> fill the screen --- */
-html, body, #root { height: 100%; }
+html, body, #root { height: 100%; width: 100%; }
 
 /* The wrapper should not constrain width or add padding around the game */
 .wrap{

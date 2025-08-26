@@ -1,0 +1,164 @@
+/* Fonts and theming for Leaderboard */
+:root {
+  --lb-bg: transparent;         /* make it blend with app background */
+  --lb-row-bg: transparent;
+  --lb-row-bg-selected: #414A5C;
+  --lb-green: #68CC58;
+  --lb-amber: #F5C451;
+  --lb-white: #FFF;
+  --lb-white-70: rgba(255,255,255,0.7);
+  --lb-width: 100%;
+  --lb-gap: 20px;
+}
+
+.lb-root {
+  position: relative;
+  width: var(--lb-width);
+  color: var(--lb-white);
+  font-family: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  background: var(--lb-bg);
+}
+
+/* Sections */
+.lb-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: var(--lb-width);
+  gap: 0;
+  margin-bottom: var(--lb-gap);
+}
+
+/* Titles */
+.lb-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px 20px;
+  height: 50px;
+}
+
+.lb-title-text {
+  font-family: "SF Mono", ui-monospace, "Cascadia Mono", "Source Code Pro", Menlo, Consolas, monospace;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+.lb-title--green .lb-title-text { color: var(--lb-green); }
+.lb-title--amber .lb-title-text { color: var(--lb-amber); }
+
+/* Lists */
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: var(--lb-width);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* Row */
+.lb-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+  padding: 0 16px;
+  width: var(--lb-width);
+  background: var(--lb-row-bg); /* default transparent */
+  border-radius: 8px;           /* subtle polish */
+}
+
+.lb-row.is-selected {
+  background: var(--lb-row-bg-selected);
+}
+
+.lb-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  height: 60px;
+  flex: 1 1 auto;
+  min-width: 0; /* allow name ellipsis */
+}
+
+/* Rank */
+.lb-rank {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 19px 0;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  width: 22px; /* enough for 1–2 digit ranks */
+  color: var(--lb-white);
+}
+
+/* Avatar */
+.lb-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #FF885E 0%, #FF516A 100%);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.lb-avatar-text {
+  font-family: "SF Pro Rounded", ui-rounded, "SF Pro Display", "SF Pro Text", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 40px; /* vertical centering like Figma */
+  color: var(--lb-white);
+  text-align: center;
+  font-feature-settings: "tnum" on, "lnum" on;
+}
+
+/* Name */
+.lb-name {
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  color: var(--lb-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right (star + score) */
+.lb-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 60px;
+  padding: 19px 0;
+}
+
+.lb-star {
+  width: 18px;
+  height: 18px;
+  color: var(--lb-white-70);
+  opacity: 0.7; /* explicit per Figma */
+}
+
+.lb-score {
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  color: var(--lb-white-70);
+}
+
+/* Optional: small screen safety (keeps look if parent narrower than 393) */
+@media (max-width: 393px) {
+  .lb-root, .lb-section, .lb-list, .lb-row { width: 100%; }
+}
