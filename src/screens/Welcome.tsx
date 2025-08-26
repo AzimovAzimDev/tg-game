@@ -1,23 +1,13 @@
 import { useEffect } from "react";
+import WebApp from "@twa-dev/sdk";
 import styles from "./Welcome.module.css";
-
-interface TelegramWebApp {
-  ready?: () => void;
-  expand?: () => void;
-  HapticFeedback?: {
-    impactOccurred?: (type: string) => void;
-  };
-}
-
-const tg = (window as unknown as { Telegram?: { WebApp?: TelegramWebApp } })
-  .Telegram?.WebApp;
 
 type Props = { onStart: () => void };
 
 export default function Welcome({ onStart }: Props) {
+  const user = WebApp.initDataUnsafe?.user;
+
   useEffect(() => {
-    tg?.ready?.();
-    tg?.expand?.();
     document.body.style.backgroundColor =
       getComputedStyle(document.documentElement)
         .getPropertyValue("--tg-theme-bg_color") || "#0f1115";
@@ -25,7 +15,7 @@ export default function Welcome({ onStart }: Props) {
 
   const handleStart = () => {
     try {
-      tg?.HapticFeedback?.impactOccurred?.("light");
+      WebApp.HapticFeedback?.impactOccurred?.("light");
     } catch {
       // ignore haptic errors
     }
@@ -45,6 +35,12 @@ export default function Welcome({ onStart }: Props) {
           <span className={`${styles.dot} ${styles.yellow}`} />
           <span className={`${styles.dot} ${styles.green}`} />
         </div>
+
+        {user && (
+          <p className={styles.user}>
+            Привет, {user.first_name} {user.last_name ?? ""}!
+          </p>
+        )}
 
         <h1 id="w-title" className={styles.title}>
           Deploy or Die
