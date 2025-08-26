@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from 'react';
+import css from './Modal.module.css';
 
 export type ModalProps = {
   isOpen: boolean;
@@ -32,28 +33,17 @@ export default function Modal({ isOpen, onClose, children, ariaLabel, closeOnBac
       aria-modal="true"
       aria-label={ariaLabel}
       onClick={onBackdropClick}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-        padding: 16,
-      }}
+      className={css.backdrop}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{
-          background: '#181B22',
-          borderRadius: 20,
-          padding: 24,
-          width: '100%',
-          maxWidth: 360,
-          boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
-        }}
+        className={css.panel}
       >
+        <div className={css.windowDots} aria-hidden>
+          <span className={`${css.dot} ${css.red}`} />
+          <span className={`${css.dot} ${css.yellow}`} />
+          <span className={`${css.dot} ${css.green}`} />
+        </div>
         {children}
       </div>
     </div>

@@ -1,0 +1,45 @@
+/* Default modal styles based on Welcome card visuals */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px; /* space for safe insets */
+}
+
+.panel {
+  background: #151922; /* matches Welcome.card var(--card) */
+  border: 1px solid #2a2f3a; /* matches Welcome.card var(--border) */
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+  padding: 20px 20px 16px;
+  width: 100%;
+  max-width: min(680px, 92vw);
+}
+
+/* Window dots replicated from Welcome.module.css for consistent header */
+.windowDots {
+  display: flex;
+  gap: 8px;
+  padding: 6px 4px 12px 6px;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+  opacity: 0.9;
+}
+.red {
+  background: #ff5f56;
+}
+.yellow {
+  background: #ffbd2e;
+}
+.green {
+  background: #27c93f;
+}
