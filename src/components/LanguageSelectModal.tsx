@@ -62,7 +62,7 @@ export default function LanguageSelectModal({ isOpen, onClose, cookieName }: Lan
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Выбор языка">
+    <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Выбор языка" closeOnBackdrop={false}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <img src={logo} alt="Logo" style={{ height: '30vh', width: 'auto', borderRadius: 12 }} />
         <div style={textStyle}>Выберите язык / Tiлдi таңдаңыз</div>
