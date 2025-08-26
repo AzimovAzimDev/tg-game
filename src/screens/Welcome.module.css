@@ -15,9 +15,8 @@
   padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(1200px 600px at 50% -20%, #19202b 0%, var(--bg) 60%),
-    var(--bg);
+  position: relative; /* allow absolutely-positioned background consoles */
+  background: #1D2129;
   color: var(--text);
 }
 
@@ -88,4 +87,30 @@
 
 .cta:active {
   transform: translateY(1px);
+}
+
+/* Background console styles */
+.bgConsole {
+  position: absolute;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #4D586E; /* per spec */
+  white-space: pre;
+  pointer-events: none; /* never block UI */
+  user-select: none;
+  max-width: 44vw;
+  text-shadow: 0 0 2px rgba(0,0,0,0.35);
+}
+.topLeft {
+  top: 12px;
+  left: 12px;
+  text-align: left;
+}
+.bottomRight {
+  bottom: 12px;
+  right: 12px;
+  text-align: left;
+  transform: translate(139%, -43%);
 }

@@ -3,7 +3,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,8 +12,8 @@
 }
 
 .panel {
-  background: #151922; /* matches Welcome.card var(--card) */
-  border: 1px solid #2a2f3a; /* matches Welcome.card var(--border) */
+  background: #1D2129; /* unified modal background */
+  border: 1px solid #FFFFFF26; /* unified modal border */
   border-radius: 18px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
   padding: 20px 20px 16px;

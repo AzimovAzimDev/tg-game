@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import WebApp from "@twa-dev/sdk";
 import NumberedList from "../ui/NumberedList";
+import Button from "../ui/Button";
 import css from "./Rules.module.css";
 
 type Props = { onStart: () => void };
@@ -66,9 +67,9 @@ export default function Rules({ onStart }: Props) {
         </div>
       </div>
 
-      <button className={css.cta} onClick={start} aria-label="Начать игру">
+      <Button onClick={start} aria-label="Начать игру">
         Погнали 🚀
-      </button>
+      </Button>
     </div>
   );
 }

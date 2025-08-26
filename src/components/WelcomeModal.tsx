@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import WebApp from "@twa-dev/sdk";
 import Modal from "./Modal";
 import styles from "../screens/Welcome.module.css";
+import Button from "../ui/Button";
 
 export type WelcomeModalProps = {
   isOpen: boolean;
@@ -44,13 +45,9 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
           пока таймер не обнулился
         </p>
 
-        <button
-          className={styles.cta}
-          onClick={handleStart}
-          aria-label="Начать игру"
-        >
-          Начать
-        </button>
+        <div style={{ marginTop: 8 }}>
+          <Button onClick={handleStart} aria-label="Начать игру">Начать</Button>
+        </div>
       </div>
     </Modal>
   );

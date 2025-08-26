@@ -3,31 +3,10 @@ import Modal from './Modal';
 import i18n from '../i18n';
 import logo from '../assets/main.png';
 import { USER_PREFERENCES } from '../config/userPreferences';
-
-const btnStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  padding: '15px 12px',
-  gap: 10,
-  width: 329,
-  minWidth: 50,
-  height: 52,
-  background: '#2E333E',
-  borderRadius: 16,
-  border: 'none',
-  color: '#FFFFFF',
-  cursor: 'pointer',
-  fontFamily: 'Golos Text, system-ui, sans-serif',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: 16,
-  lineHeight: '19px',
-};
+import Button from '../ui/Button';
 
 const textStyle: React.CSSProperties = {
-  width: 329,
+  width: '100%',
   height: 19,
   fontFamily: 'Golos Text, system-ui, sans-serif',
   fontStyle: 'normal',
@@ -66,13 +45,9 @@ export default function LanguageSelectModal({ isOpen, onClose, cookieName }: Lan
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <img src={logo} alt="Logo" style={{ height: '30vh', width: 'auto', borderRadius: 12 }} />
         <div style={textStyle}>Выберите язык / Tiлдi таңдаңыз</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', alignItems: 'center' }}>
-          <button style={btnStyle} onClick={() => choose('ru')}>
-            Русский
-          </button>
-          <button style={btnStyle} onClick={() => choose('kk')}>
-            Қазақша
-          </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', alignItems: 'stretch' }}>
+          <Button variant="gray" onClick={() => choose('ru')}>Русский</Button>
+          <Button variant="gray" onClick={() => choose('kk')}>Қазақша</Button>
         </div>
       </div>
     </Modal>
