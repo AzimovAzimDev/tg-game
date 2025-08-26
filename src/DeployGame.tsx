@@ -1,10 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './DeployGame.css';
+import { useNavigate } from 'react-router-dom';
+import SuccessModal from './components/SuccessModal';
+import UnsuccessModal from './components/UnsuccessModal';
 
 // Deploy or Die — Tower Bloxx–style paddle catch implementation
 // Single-file implementation with canvas rendering and DOM HUD
 
 export default function DeployGame() {
+  const navigate = useNavigate();
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [failOpen, setFailOpen] = useState(false);
+  const [finalScoreNum, setFinalScoreNum] = useState(0);
+
   useEffect(() => {
     // Types from the spec
     type StepId =
@@ -162,6 +170,7 @@ export default function DeployGame() {
       playW: number;
       playH: number;
       timeDropCounter: number; // counts normal spawns to drop a time power-up every 12
+      deploys: number; // completed full sequences (finished deploy)
     }
 
     let state: GameState;
@@ -203,6 +212,7 @@ export default function DeployGame() {
         playW: 0,
         playH: 0,
         timeDropCounter: 0,
+        deploys: 0,
       };
       resizeCanvas();
       // center platform
@@ -435,6 +445,8 @@ export default function DeployGame() {
             state.score += bonus;
             chord([660, 880, 1320], 0.22);
             showToast('Cycle complete!');
+            // Count a completed deploy
+            state.deploys += 1;
             // Clear the stack after completing Deploy to make room for next cycle
             state.stacked = [];
             // Slightly increase difficulty by reducing spawn interval a bit
@@ -470,8 +482,13 @@ export default function DeployGame() {
       stats.lastScore = state.score;
       stats.bestScore = Math.max(stats.bestScore, state.score);
       localStorage.setItem('deployGameStats', JSON.stringify(stats));
-      finish.classList.add('show');
-      endTitle.textContent = reason === 'timeout' ? '⏰ Time! Deploy window closed' : '😵 Dropped off platform!';
+      // Open appropriate modal based on completed deploys
+      setFinalScoreNum(state.score);
+      if (state.deploys >= 1) {
+        setSuccessOpen(true);
+      } else {
+        setFailOpen(true);
+      }
     }
 
     function maybeRampDifficulty() {
@@ -767,6 +784,18 @@ export default function DeployGame() {
           </div>
         </div>
       </main>
+      <SuccessModal
+        isOpen={successOpen}
+        onClose={() => setSuccessOpen(false)}
+        score={finalScoreNum}
+        onSubmitScore={() => { setSuccessOpen(false); navigate('/leaders'); }}
+        onPlayAgain={() => { setSuccessOpen(false); navigate('/rules'); }}
+      />
+      <UnsuccessModal
+        isOpen={failOpen}
+        onClose={() => setFailOpen(false)}
+        onPlayAgain={() => { setFailOpen(false); navigate('/rules'); }}
+      />
     </div>
   );
 }
