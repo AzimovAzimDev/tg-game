@@ -1,4 +1,3 @@
-import React from "react";
 import "./leaderboard.css";
 
 export type Entry = {
