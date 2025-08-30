@@ -28,7 +28,9 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
   const goLeaders = useCallback(() => {
     try {
       WebApp.HapticFeedback?.impactOccurred?.("light");
-    } catch {}
+    } catch {
+      // ignore haptic errors
+    }
     navigate('/leaders');
     onClose();
   }, [navigate, onClose]);

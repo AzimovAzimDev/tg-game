@@ -115,7 +115,6 @@ export default function DeployGame() {
 
     const toast = document.getElementById('toast') as HTMLDivElement;
     const finish = document.getElementById('finish') as HTMLDivElement;
-    const endTitle = document.getElementById('endTitle') as HTMLElement;
     const finalScore = document.getElementById('finalScore') as HTMLElement;
     const playAgain = document.getElementById('playAgain') as HTMLButtonElement;
     const shareBtn = document.getElementById('shareBtn') as HTMLButtonElement;
@@ -472,7 +471,7 @@ export default function DeployGame() {
       return m;
     }
 
-    function endFail(reason: 'timeout' | 'off-platform') {
+    function endFail() {
       state.running = false;
       finalScore.textContent = String(state.score);
       // Save simple stats
@@ -632,7 +631,7 @@ export default function DeployGame() {
       if (state.timeLeftMs <= 0) {
         state.timeLeftMs = 0;
         updateUI();
-        return endFail('timeout');
+        return endFail();
       }
 
       maybeRampDifficulty();
