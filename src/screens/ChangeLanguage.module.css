@@ -1,0 +1,141 @@
+:root {
+  --bg: #0f141b;
+  --card: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.15);
+  --text: #ffffff;
+  --muted: #a7b0be;
+  --red: #e01b1b; /* your project red */
+}
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* header / title */
+.header {
+  padding: 36px 16px 0;
+}
+.title {
+  margin: 0;
+  font-family: "SF Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 38px;
+}
+
+/* main content */
+.content {
+  padding: 32px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 16px;
+  background: transparent;
+}
+
+.itemBody {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+/* text */
+.itemText {
+  font-family: "Golos Text", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: 0.6px;
+}
+
+/* custom radio */
+.radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 2px solid var(--text);
+  opacity: 0.4;
+  position: relative;
+  flex: 0 0 20px;
+}
+.radioChecked {
+  border: none;
+  opacity: 1;
+  background: var(--red);
+}
+.radioChecked::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    conic-gradient(from 0deg, transparent 0 25%, white 0 100%); /* just to avoid iOS blur bug */
+}
+.radioChecked::before {
+  /* check mark */
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 6.25px;
+  width: 11.15px;
+  height: 8px;
+  border: 2px solid #fff;
+  border-top: 0;
+  border-right: 0;
+  transform: rotate(-45deg);
+}
+
+/* footer / save button */
+.footer {
+  background: #1d2129;
+  padding: 8px 16px 16px;
+  position: sticky;
+  bottom: 0;
+}
+
+.saveBtn {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 16px;
+  border: none;
+  background: var(--red);
+  color: #fff;
+  font-family: "Golos Text", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 22px;
+  letter-spacing: -0.4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 12px;
+  cursor: pointer;
+}
+
+/* accessibility helpers */
+.visuallyHidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}

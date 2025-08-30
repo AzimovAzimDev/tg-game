@@ -6,6 +6,8 @@ import Leaders from './screens/Leaders';
 import TabLayout from './components/TabLayout';
 import Profile from './screens/Profile';
 import Settings from './screens/Settings';
+import ChangeLanguage from './screens/ChangeLanguage';
+import i18n from './i18n';
 
 export default function App() {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ export default function App() {
       {/* Non-tabbed routes */}
       <Route path="/rules" element={<Rules onStart={() => navigate('/game')} />} />
       <Route path="/game" element={<DeployGame />} />
+      <Route path="/settings/language" element={<ChangeLanguage initialLanguage={(i18n as any)?.language ?? 'ru'} onSave={() => navigate(-1)} />} />
     </Routes>
   );
 }

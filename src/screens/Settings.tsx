@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import LanguageSelectModal from '../components/LanguageSelectModal';
-import { USER_PREFERENCES } from '../config/userPreferences';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
 
 export default function Settings() {
-  const [showLang, setShowLang] = useState(false);
-  const cookieName = useMemo(() => USER_PREFERENCES.languageCookie, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.style.background = '#1D2129';
@@ -17,14 +15,8 @@ export default function Settings() {
       <p>Change app preferences.</p>
 
       <div style={{ display: 'flex', gap: 12 }}>
-        <Button variant="gray" onClick={() => setShowLang(true)}>Change language</Button>
+        <Button variant="gray" onClick={() => navigate('/settings/language')}>Change language</Button>
       </div>
-
-      <LanguageSelectModal
-        isOpen={showLang}
-        onClose={() => setShowLang(false)}
-        cookieName={cookieName}
-      />
     </div>
   );
 }
