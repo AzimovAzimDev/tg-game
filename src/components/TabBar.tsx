@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react';
+import LanguageSelectModal from './LanguageSelectModal';
 
 const barStyle: React.CSSProperties = {
   position: 'fixed',
@@ -24,6 +25,11 @@ const linkStyle: React.CSSProperties = {
   color: '#9ca3af', // gray for inactive
   textDecoration: 'none',
   fontSize: 12,
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  fontFamily: 'inherit',
+  padding: 0,
 };
 
 const activeStyle: React.CSSProperties = {
@@ -69,16 +75,22 @@ function SvgIcon({ path, filled }: { path: string; filled: boolean }) {
 }
 
 export default function TabBar() {
-  const tabs = [
+  const [languageModalOpen, setLanguageModalOpen] = useState(false);
+  const tabs: ({ to?: string; label: string; iconPath: string; onClick?: () => void; })[] = [
     { to: '/', label: 'Home', iconPath: 'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' }, // Home
     { to: '/leaders', label: 'Результаты', iconPath: 'M7 17v-7h4v7H7zm6 0V7h4v10h-4zM3 17v-4h4v4H3z' }, // Leaderboard
     { to: '/profile', label: 'Profile', iconPath: 'M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z' }, // Person
-    { to: '/settings', label: 'Settings', iconPath: 'M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.5.5,0,0,0,12.78,2H9.22a.5.5,0,0,0-.5.42L8.34,5.07a7.16,7.16,0,0,0-1.63.94l-2.49-1a.5.5,0,0,0-.6.22l-2,3.46a.5.5,0,0,0,.12.64L3.86,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L1.75,14.59a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.6.22l2.49-1a7.16,7.16,0,0,0,1.63.94l.38,2.65a.5.5,0,0,0,.5.42h3.56a.5.5,0,0,0,.5-.42l.38-2.65a7.16,7.16,0,0,0,1.63-.94l2.49,1a.5.5,0,0,0,.6-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z' }, // Settings
+    {
+      label: 'Language',
+      iconPath: 'M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z',
+      onClick: () => setLanguageModalOpen(true),
+    },
   ];
   const navigate = useNavigate();
 
   return (
     <div style={containerStyle}>
+      <LanguageSelectModal isOpen={languageModalOpen} onClose={() => setLanguageModalOpen(false)} />
       <button type="button" style={fabStyle} onClick={() => navigate('/rules')} aria-label="Start Game">
         {/* Play icon bigger */}
         <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -90,10 +102,10 @@ export default function TabBar() {
         {/* Left two tabs */}
         {tabs.slice(0, 2).map((t) => (
           <NavLink
-            key={t.to}
-            to={t.to}
+            key={t.label}
+            to={t.to!}
             end={t.to === '/'}
-            style={({ isActive }) => ({ ...linkStyle, ...(isActive ? activeStyle : null) })}
+            style={({ isActive }) => ({ ...linkStyle, ...(isActive ? activeStyle : {}) })}
           >
             {({ isActive }) => (
               <>
@@ -108,21 +120,36 @@ export default function TabBar() {
         <div aria-hidden />
 
         {/* Right two tabs */}
-        {tabs.slice(2).map((t) => (
-          <NavLink
-            key={t.to}
-            to={t.to}
-            end={t.to === '/'}
-            style={({ isActive }) => ({ ...linkStyle, ...(isActive ? activeStyle : null) })}
-          >
-            {({ isActive }) => (
-              <>
-                <SvgIcon path={t.iconPath} filled={isActive} />
-                <span>{t.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
+        {tabs.slice(2).map((t) => {
+          if (t.to) {
+            return (
+              <NavLink
+                key={t.label}
+                to={t.to}
+                end={t.to === '/'}
+                style={({ isActive }) => ({ ...linkStyle, ...(isActive ? activeStyle : {}) })}
+              >
+                {({ isActive }) => (
+                  <>
+                    <SvgIcon path={t.iconPath} filled={isActive} />
+                    <span>{t.label}</span>
+                  </>
+                )}
+              </NavLink>
+            );
+          }
+          return (
+            <button
+              key={t.label}
+              type="button"
+              style={linkStyle}
+              onClick={t.onClick}
+            >
+              <SvgIcon path={t.iconPath} filled={false} />
+              <span>{t.label}</span>
+            </button>
+          );
+        })}
       </nav>
     </div>
   );
