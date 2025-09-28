@@ -68,7 +68,7 @@ export default function Rules({ onStart }: Props) {
       </div>
 
       <Button onClick={start} aria-label="Начать игру">
-        Погнали 🚀
+        Погнали ⚡
       </Button>
     </div>
   );
