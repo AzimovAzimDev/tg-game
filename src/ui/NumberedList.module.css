@@ -44,8 +44,8 @@
   background: var(--accent);
   opacity: .7;
 }
-.lineTop    { top: 0;    height: 50%; }
-.lineBottom { bottom: 0; height: 50%; }
+.lineTop    { top: -50%;    height: 50%; }
+.lineBottom { bottom: -50%; height: 50%; }
 
 .text {
   color: var(--muted);
