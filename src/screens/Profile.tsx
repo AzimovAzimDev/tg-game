@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import s from './ProfilePage.module.css';
 
 // Types for list items

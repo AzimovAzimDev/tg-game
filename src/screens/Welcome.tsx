@@ -4,6 +4,7 @@ import styles from "./Welcome.module.css";
 import LanguageSelectModal from "../components/LanguageSelectModal";
 import { USER_PREFERENCES } from "../config/userPreferences";
 import WelcomeModal from "../components/WelcomeModal";
+import logo from "../assets/conf-logo.svg";
 
 type Props = { onStart: () => void };
 
@@ -85,6 +86,7 @@ export default function Welcome({ onStart }: Props) {
 
   return (
     <div className={styles.screen} role="main">
+      <img src={logo} alt="logo" className={styles.logo} />
       {/* Background console logs */}
       <div className={`${styles.bgConsole} ${styles.topLeft}`}>{topWindow.join("\n")}</div>
       <div className={`${styles.bgConsole} ${styles.bottomRight}`}>{bottomWindow.join("\n")}</div>
