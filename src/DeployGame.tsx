@@ -185,8 +185,8 @@ export default function DeployGame() {
       canvas!.height = h;
       state.playW = w;
       state.playH = h;
-      // Place platform 24px from bottom
-      state.platform.y = h - 24;
+      // Place platform 48px from bottom
+      state.platform.y = h - 48;
       // Platform should be 1.5x the block width
       state.platform.w = Math.round(params.blockSize.w * 1.5);
     }
@@ -796,7 +796,7 @@ export default function DeployGame() {
             </div>
           </div>
         </div>
-        <div style={{ position: 'absolute', left: '12px', right: '12px', bottom: '12px', zIndex: 2 }}>
+        <div style={{ position: 'absolute', left: '12px', right: '12px', top: '44px', zIndex: 2 }}>
           <div className="timerbar">
             <div className="fill" id="timeFill" />
           </div>
