@@ -51,15 +51,14 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
         </h1>
 
         <p id="wm-desc" className={styles.body}>
-          Твоя задача — поймать<br />
-          все шаги деплоя<br />
-          в правильном порядке,<br />
-          пока таймер не обнулился
+          Твоя задача — собрать весь цикл разработки до продакшн-деплоя.<br />
+          На экране будет показан правильный порядок блоков задач — каждый из них отмечен смайликом.<br />
+          Тебе нужно ловить только нужные задачи, собирать их в правильной последовательности и игнорировать лишние блоки.
         </p>
 
         <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
           <Button onClick={handleStart} aria-label="Начать игру">Начать</Button>
-          <Button variant="gray" onClick={goLeaders} aria-label="Доска лидеров">Доска лидеров</Button>
+          <Button variant="gray" onClick={goLeaders} aria-label="Результаты">Результаты</Button>
         </div>
       </div>
     </Modal>

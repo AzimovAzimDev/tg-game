@@ -17,7 +17,7 @@ export default function Profile() {
   }, []);
 
   const items: Item[] = [
-    { id: 'leaders', icon: 'trophy', label: 'Доска лидеров', href: '/leaders' },
+    { id: 'leaders', icon: 'trophy', label: 'Результаты', href: '/leaders' },
     { id: 'language', icon: 'globe', label: 'Сменить язык', href: '/settings/language' },
   ];
 

@@ -12,6 +12,7 @@ export type LeaderboardProps = {
   othersTitle?: string;
   prizeCount?: number; // how many get the prize (highlighted group)
   entries: Entry[];    // already sorted DESC by score
+  mode?: 'two-sections' | 'single';
 };
 
 export default function Leaderboard({
@@ -19,9 +20,33 @@ export default function Leaderboard({
   othersTitle = "Все участники",
   prizeCount = 3,
   entries,
+  mode = 'two-sections',
 }: LeaderboardProps) {
   const winners = entries.slice(0, prizeCount);
   const others = entries.slice(prizeCount);
+
+  if (mode === 'single') {
+    return (
+      <div className="lb-root">
+        <section className="lb-section">
+          <header className="lb-title lb-title--green">
+            <span className="lb-title-text">{winnersTitle}</span>
+          </header>
+          <ul className="lb-list">
+            {entries.map((e, i) => (
+              <LeaderboardRow
+                key={e.id}
+                rank={i + 1}
+                name={e.name}
+                initials={e.initials}
+                score={e.score}
+              />
+            ))}
+          </ul>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="lb-root">

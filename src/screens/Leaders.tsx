@@ -8,14 +8,25 @@ export default function Leaders() {
     document.body.style.background = '#1D2129';
   }, []);
 
-  const entries: Entry[] = [
-    { id: '1', name: 'Marcus Bergson', initials: 'MB', score: 324 },
-    { id: '2', name: 'Talan Bator', initials: 'TB', score: 301 },
-    { id: '3', name: 'Avatar Aang', initials: 'AA', score: 299 },
-    { id: '4', name: 'Kadin Curtis', initials: 'KC', score: 285 },
-    { id: '5', name: 'Omar Calzoni', initials: 'OC', score: 273 },
-    { id: '6', name: 'Mira Schleifer', initials: 'MS', score: 269 },
-  ];
+  // Load personal results from localStorage
+  let entries: Entry[] = [];
+  try {
+    const raw = localStorage.getItem('myResults');
+    const list = raw ? JSON.parse(raw) : [];
+    if (Array.isArray(list)) {
+      entries = list
+        .map((r: any, idx: number) => ({
+          id: String(r?.id ?? idx),
+          name: String(r?.name ?? 'Я'),
+          initials: String(r?.initials ?? 'Я'),
+          score: Number(r?.score ?? 0),
+        }))
+        .filter(e => Number.isFinite(e.score))
+        .sort((a, b) => b.score - a.score);
+    }
+  } catch {
+    // ignore parsing errors
+  }
 
   return (
     <div style={{
@@ -24,11 +35,15 @@ export default function Leaders() {
       color: '#e5e7eb',
       position: 'relative',
     }}>
-        <h1 style={{ margin: 0, padding: 20 }}>Доска лидеров</h1>
+        <h1 style={{ margin: 0, padding: 20 }}>Мои результаты</h1>
 
-      {/* Leaderboard block positioned below the title */}
-      <div style={{  }}>
-        <Leaderboard entries={entries} />
+      {/* Personal leaderboard block positioned below the title */}
+      <div>
+        {entries.length > 0 ? (
+          <Leaderboard entries={entries} mode="single" winnersTitle="Мои результаты" />
+        ) : (
+          <div style={{ padding: 20, opacity: 0.8 }}>Пока нет результатов. Сыграйте игру, чтобы увидеть свои баллы здесь.</div>
+        )}
       </div>
     </div>
   );

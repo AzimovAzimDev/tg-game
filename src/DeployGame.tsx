@@ -481,6 +481,25 @@ export default function DeployGame() {
       stats.lastScore = state.score;
       stats.bestScore = Math.max(stats.bestScore, state.score);
       localStorage.setItem('deployGameStats', JSON.stringify(stats));
+
+      // Save detailed result entry for personal leaderboard
+      try {
+        const key = 'myResults';
+        const rawList = localStorage.getItem(key);
+        const list = rawList ? JSON.parse(rawList) : [];
+        const now = new Date();
+        const entry = {
+          id: String(now.getTime()),
+          name: 'Я',
+          initials: 'Я',
+          score: state.score,
+          ts: now.toISOString(),
+        };
+        const next = [entry, ...Array.isArray(list) ? list : []].slice(0, 100); // keep up to 100
+        localStorage.setItem(key, JSON.stringify(next));
+      } catch {
+        // ignore localStorage errors (e.g., private mode)
+      }
       // Open appropriate modal based on completed deploys
       setFinalScoreNum(state.score);
       if (state.deploys >= 1) {
