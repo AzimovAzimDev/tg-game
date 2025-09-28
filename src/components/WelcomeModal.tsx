@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import WebApp from "@twa-dev/sdk";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
 import styles from "../screens/Welcome.module.css";
 import Button from "../ui/Button";
@@ -12,6 +13,7 @@ export type WelcomeModalProps = {
 };
 
 export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalProps) {
+  const { t } = useTranslation();
   const user = WebApp.initDataUnsafe?.user;
   const navigate = useNavigate();
 
@@ -42,23 +44,23 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
         {/* We intentionally avoid duplicating windowDots here because Modal already renders them */}
         {user && (
           <p className={styles.user}>
-            Привет, {user.first_name} {user.last_name ?? ""}!
+            {t('welcome.greeting', { firstName: user.first_name, lastName: user.last_name ?? "" })}
           </p>
         )}
 
         <h1 id="wm-title" className={styles.title}>
-          Deploy or Die
+          {t('welcome.title')}
         </h1>
 
-        <p id="wm-desc" className={styles.body}>
-          Твоя задача — собрать весь цикл разработки до продакшн-деплоя.<br /><br />
-          На экране будет показан правильный порядок блоков задач — каждый из них отмечен смайликом.<br /><br />
-          Тебе нужно ловить только нужные задачи, собирать их в правильной последовательности и игнорировать лишние блоки.
-        </p>
+        <p
+          id="wm-desc"
+          className={styles.body}
+          dangerouslySetInnerHTML={{ __html: t('welcome.description') }}
+        />
 
         <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
-          <Button onClick={handleStart} aria-label="Начать игру">Начать</Button>
-          <Button variant="gray" onClick={goLeaders} aria-label="Результаты">Результаты</Button>
+          <Button onClick={handleStart} aria-label={t('welcome.startButtonAria')}>{t('welcome.startButton')}</Button>
+          <Button variant="gray" onClick={goLeaders} aria-label={t('welcome.resultsButtonAria')}>{t('welcome.resultsButton')}</Button>
         </div>
       </div>
     </Modal>

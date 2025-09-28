@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import s from './ProfilePage.module.css';
 
 // Types for list items
@@ -11,13 +12,15 @@ import s from './ProfilePage.module.css';
 };
 
 export default function Profile() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     // unify background per design
     document.body.style.background = '#0f141b';
   }, []);
 
   const items: Item[] = [
-    { id: 'leaders', icon: 'trophy', label: 'Результаты', href: '/leaders' },
+    { id: 'leaders', icon: 'trophy', label: t('welcome.resultsButton'), href: '/leaders' },
   ];
 
   return (
@@ -37,7 +40,7 @@ export default function Profile() {
         </div>
       </section>
 
-      <nav className={s.actionList} aria-label="Действия профиля">
+      <nav className={s.actionList} aria-label={t('profile.actionsAria')}>
         {items.map((item) => (
           <ListRow key={item.id} item={item} />
         ))}

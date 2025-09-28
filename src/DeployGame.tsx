@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './DeployGame.css';
 import { useNavigate } from 'react-router-dom';
+import i18n from './i18n';
 import SuccessModal from './components/SuccessModal';
 import UnsuccessModal from './components/UnsuccessModal';
 
@@ -66,17 +67,11 @@ export default function DeployGame() {
       healBiasWhenBlocked: 0.85,
     } as const;
 
-    const STEPS: { id: StepId; label: string; emoji: string }[] = [
-      { id: 'requirements', label: 'Get requirements', emoji: '📝' },
-      { id: 'branch', label: 'Create branch', emoji: '🌿' },
-      { id: 'code', label: 'Write code', emoji: '💻' },
-      { id: 'tests', label: 'Write tests', emoji: '🧪' },
-      { id: 'fix-bugs', label: 'Fix bugs', emoji: '🐛' },
-      { id: 'resolve-conflicts', label: 'Resolve conflicts', emoji: '⚔️' },
-      { id: 'mr-approvals', label: 'Get MR approvals', emoji: '✅' },
-      { id: 'merge-main', label: 'Merge to main', emoji: '🔀' },
-      { id: 'deploy-prod', label: 'Deploy to prod', emoji: '🚀' },
-    ];
+    const STEPS: { id: StepId; label: string; emoji: string }[] = Object.keys(i18n.t('steps', { returnObjects: true })).map((key) => ({
+      id: key as StepId,
+      label: i18n.t(`steps.${key}`),
+      emoji: i18n.t(`steps.${key}`).split(' ').pop() || '',
+    }));
 
     // DOM refs
     const gameEl = document.getElementById('game') as HTMLDivElement;
@@ -106,7 +101,7 @@ export default function DeployGame() {
       scoreChip = document.createElement('div');
       scoreChip.className = 'chip';
       scoreChip.id = 'scoreChip';
-      scoreChip.innerHTML = '★ Score: <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>';
+      scoreChip.innerHTML = `★ ${i18n.t('game.score')}: <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>`;
       const hud = gameEl.querySelector('.hud');
       hud?.appendChild(scoreChip);
     }
@@ -245,7 +240,7 @@ export default function DeployGame() {
       }
       // Goal pill
       const goal = STEPS[state.goalIndex];
-      hudNext.textContent = `Goal: ${goal.label} ${goal.emoji}`;
+      hudNext.textContent = `${i18n.t('game.goal')}: ${goal.label}`;
     }
 
     function rand(min: number, max: number) { return Math.random() * (max - min) + min; }
@@ -443,7 +438,7 @@ export default function DeployGame() {
             const bonus = Math.floor((state.timeLeftMs / 1000) * params.points.finishPerSec);
             state.score += bonus;
             chord([660, 880, 1320], 0.22);
-            showToast('Cycle complete!');
+            showToast(i18n.t('game.cycleComplete'));
             // Count a completed deploy
             state.deploys += 1;
             // Clear the stack after completing Deploy to make room for next cycle
@@ -490,8 +485,8 @@ export default function DeployGame() {
         const now = new Date();
         const entry = {
           id: String(now.getTime()),
-          name: 'Я',
-          initials: 'Я',
+          name: i18n.t('game.me'),
+          initials: i18n.t('game.me'),
           score: state.score,
           ts: now.toISOString(),
         };
@@ -551,7 +546,7 @@ export default function DeployGame() {
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.font = 'bold 14px system-ui, sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText(`Blocked: ${state.blocked === 'bug' ? '🐛 Bug' : '⚠️ Infra'}`, 8, 18);
+        ctx.fillText(`${i18n.t('game.blocked')}: ${state.blocked === 'bug' ? `🐛 ${i18n.t('game.bug')}` : `⚠️ ${i18n.t('game.infra')}`}`, 8, 18);
       }
     }
 
@@ -620,10 +615,10 @@ export default function DeployGame() {
         const step = STEPS.find(s => s.id === kind.step)!;
         return { text: step.label, emoji: step.emoji };
       }
-      if (kind.type === 'bad') return { text: kind.name === 'bug' ? 'Bug' : 'Infra outage', emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
-      if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? 'Fix bug' : 'Fix infra', emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
+      if (kind.type === 'bad') return { text: kind.name === 'bug' ? i18n.t('game.bug') : i18n.t('game.infra'), emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
+      if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? i18n.t('game.fixBug') : i18n.t('game.fixInfra'), emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
       // time bonus
-      return { text: 'Time', emoji: '⏳' };
+      return { text: i18n.t('game.time'), emoji: '⏳' };
     }
 
     function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number, fill: boolean, stroke: boolean) {
@@ -754,10 +749,10 @@ export default function DeployGame() {
     playAgain.addEventListener('click', startGame);
     shareBtn.addEventListener('click', async () => {
       const goal = STEPS[state.goalIndex];
-      const text = `Deploy or Die — I scored ${state.score} pts. Next: ${goal.label} ${goal.emoji}`;
+      const text = i18n.t('game.shareText', { score: state.score, goal: goal.label, emoji: goal.emoji });
       try {
         await navigator.clipboard.writeText(text);
-        showToast('Copied to clipboard');
+        showToast(i18n.t('game.copied'));
       } catch {
         showToast(text);
       }
@@ -781,18 +776,18 @@ export default function DeployGame() {
       <main className="panel game" id="game" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="hud" style={{ height: '56px', display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 8px 0' }}>
           <div className="chip">⏱️ <span id="hudTime">120s</span></div>
-          <div className="chip">➡️ <strong id="hudNext">Goal: Get requirements 📝</strong></div>
+          <div className="chip">➡️ <strong id="hudNext">{i18n.t('game.goal')}: Get requirements 📝</strong></div>
         </div>
-        <div className="toast" id="toast">Nice!</div>
+        <div className="toast" id="toast">{i18n.t('game.nice')}</div>
         <div className="finish" id="finish">
           <div className="card">
-            <h2 id="endTitle">Time!</h2>
+            <h2 id="endTitle">{i18n.t('game.endTitle')}</h2>
             <div>
-              Final score: <strong id="finalScore">0</strong>
+              {i18n.t('game.finalScore')}: <strong id="finalScore">0</strong>
             </div>
             <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <button className="primary" id="playAgain">Play again</button>
-              <button className="secondary" id="shareBtn">Copy result</button>
+              <button className="primary" id="playAgain">{i18n.t('game.playAgain')}</button>
+              <button className="secondary" id="shareBtn">{i18n.t('game.copyResult')}</button>
             </div>
           </div>
         </div>

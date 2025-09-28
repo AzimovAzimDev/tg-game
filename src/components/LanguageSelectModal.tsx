@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from './Modal';
 import i18n from '../i18n';
 import logo from '../assets/main.png';
@@ -30,6 +31,7 @@ function setCookie(name: string, value: string, days = 365) {
 }
 
 export default function LanguageSelectModal({ isOpen, onClose, cookieName }: LanguageSelectModalProps) {
+  const { t } = useTranslation();
   const ck = cookieName ?? USER_PREFERENCES.languageCookie;
   const choose = useCallback(
     (lng: 'ru' | 'kk') => {
@@ -41,13 +43,13 @@ export default function LanguageSelectModal({ isOpen, onClose, cookieName }: Lan
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Выбор языка" closeOnBackdrop={false}>
+    <Modal isOpen={isOpen} onClose={onClose} ariaLabel={t('languageSelect.ariaLabel')} closeOnBackdrop={false}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <img src={logo} alt="Logo" style={{ height: '30vh', width: 'auto', borderRadius: 12 }} />
-        <div style={textStyle}>Выберите язык / Tiлдi таңдаңыз</div>
+        <div style={textStyle}>{t('languageSelect.title')}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', alignItems: 'stretch' }}>
-          <Button variant="gray" onClick={() => choose('ru')}>Русский</Button>
-          <Button variant="gray" onClick={() => choose('kk')}>Қазақша</Button>
+          <Button variant="gray" onClick={() => choose('ru')}>{t('languageSelect.russian')}</Button>
+          <Button variant="gray" onClick={() => choose('kk')}>{t('languageSelect.kazakh')}</Button>
         </div>
       </div>
     </Modal>
