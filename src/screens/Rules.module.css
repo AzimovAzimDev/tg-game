@@ -10,7 +10,7 @@
 
 .screen {
   min-height: 100svh;
-  padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+  padding: 18px 16px calc(18px + var(--safe-area-inset-bottom));
   background: #1D2129;
   color: var(--text);
   display: grid;

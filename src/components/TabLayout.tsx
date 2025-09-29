@@ -6,7 +6,7 @@ const containerStyle: React.CSSProperties = {
   minHeight: '100svh',
   background: '#1D2129',
   color: '#e5e7eb',
-  paddingBottom: 60, // space for the tab bar
+  paddingBottom: 'calc(60px + var(--safe-area-inset-bottom))', // space for the tab bar
 };
 
 export default function TabLayout() {

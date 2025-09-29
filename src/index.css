@@ -11,6 +11,14 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@supports (bottom: var(--tg-safe-area-inset-bottom)) {
+  :root {
+    --safe-area-inset-bottom: var(--tg-safe-area-inset-bottom);
+  }
 }
 
 a {

@@ -91,8 +91,7 @@ html, body, #root { height: 100%; width: 100%; }
 /* Make the main game panel fill the entire viewport without padding */
 .panel.game, #game{
   width: 100vw;
-  height: 100vh;
-  padding: 0;
+  padding-bottom: var(--safe-area-inset-bottom);
   border-radius: 0;
   border: none;
   grid-area: auto;
