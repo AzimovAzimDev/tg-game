@@ -38,7 +38,7 @@ export default function WelcomeModal({ isOpen, onClose, onStart }: WelcomeModalP
   }, [navigate, onClose]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Welcome">
+    <Modal isOpen={isOpen} onClose={onClose} ariaLabel={t('welcome.ariaLabel')}>
       {/* Window dots header is provided by Modal by default */}
       <div className={styles.card} style={{ width: "100%", background: "transparent", border: "none", boxShadow: "none", padding: 0 }}>
         {/* We intentionally avoid duplicating windowDots here because Modal already renders them */}

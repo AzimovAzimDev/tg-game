@@ -32,6 +32,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Выбор языка',
         },
         welcome: {
+          ariaLabel: 'Добро пожаловать',
           greeting: 'Привет, {{firstName}} {{lastName}}!',
           title: 'Deploy or Die',
           description: 'Твоя задача — собрать весь цикл разработки до продакшн-деплоя.<br /><br />На экране будет показан правильный порядок блоков задач — каждый из них отмечен смайликом.<br /><br />Тебе нужно ловить только нужные задачи, собирать их в правильной последовательности и игнорировать лишние блоки.',
@@ -130,6 +131,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Тілді таңдау',
         },
         welcome: {
+          ariaLabel: 'Қош келдіңіз',
           greeting: 'Сәлем, {{firstName}} {{lastName}}!',
           title: 'Deploy or Die',
           description: 'Твоя задача — собрать весь цикл разработки до продакшн-деплоя.<br /><br />На экране будет показан правильный порядок блоков задач — каждый из них отмечен смайликом.<br /><br />Тебе нужно ловить только нужные задачи, собирать их в правильной последовательности и игнорировать лишние блоки.',
@@ -228,6 +230,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Choose language',
         },
         welcome: {
+          ariaLabel: 'Welcome',
           greeting: 'Hello, {{firstName}} {{lastName}}!',
           title: 'Deploy or Die',
           description: 'Your task is to assemble the entire development cycle before production deployment.<br /><br />The screen will show the correct order of task blocks, each marked with an emoji.<br /><br />You need to catch only the necessary tasks, collect them in the correct sequence, and ignore the extra blocks.',
