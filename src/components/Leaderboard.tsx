@@ -112,7 +112,6 @@ function formatDate(dateString: string) {
 function LeaderboardRow({
   rank,
   name,
-  initials,
   score,
   ts,
   selected = false,

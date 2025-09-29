@@ -323,7 +323,7 @@ export default function DeployGame() {
         halfWidth = top.w / 2; // use last block width as catch width
         supportCenterX = p.x + top.dx; // top block center including its offset
       } else {
-        halfWidth = p.w / 2; // no stack yet: use platform width
+        halfWidth = p.w / 2 + 4; // no stack yet: use platform width
         supportCenterX = p.x;
       }
       // A catch occurs when the block bottom reaches the surface Y and its center is horizontally within support bounds
