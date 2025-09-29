@@ -1,9 +1,9 @@
 import css from "./NumberedList.module.css";
 
 type Item = { id: number; text: string };
-export default function NumberedList({ items }: { items: Item[] }) {
+export default function NumberedList({ items, ariaLabel }: { items: Item[]; ariaLabel?: string }) {
   return (
-    <div className={css.card} role="list" aria-label="Правила">
+    <div className={css.card} role="list" aria-label={ariaLabel || 'List'}>
       {items.map((it, i) => {
         const first = i === 0;
         const last = i === items.length - 1;
