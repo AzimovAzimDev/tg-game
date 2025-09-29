@@ -4,7 +4,6 @@ import "./leaderboard.css";
 export type Entry = {
   id: string;
   name: string;
-  initials: string;
   score: number;
   ts?: string;
 };
@@ -44,7 +43,6 @@ export default function Leaderboard({
                 key={e.id}
                 rank={i + 1}
                 name={e.name}
-                initials={e.initials}
                 score={e.score}
                 ts={e.ts}
               />
@@ -68,7 +66,6 @@ export default function Leaderboard({
               key={e.id}
               rank={i + 1}
               name={e.name}
-              initials={e.initials}
               score={e.score}
               ts={e.ts}
               selected={i === 0}
@@ -88,7 +85,6 @@ export default function Leaderboard({
               key={e.id}
               rank={i + prizeCount + 1}
               name={e.name}
-              initials={e.initials}
               score={e.score}
               ts={e.ts}
             />
@@ -118,7 +114,6 @@ function LeaderboardRow({
 }: {
   rank: number;
   name: string;
-  initials: string;
   score: number;
   ts?: string;
   selected?: boolean;

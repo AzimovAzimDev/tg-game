@@ -133,7 +133,7 @@ export default function DeployGame() {
         /* ignore */
       }
     };
-    const chord = (freqs = [440, 660, 880], dur = 0.25) => freqs.forEach(f => beep(f, dur, 'triangle', 0.02));
+
     const errorBuzz = () => {
       beep(220, 0.08, 'square', 0.025);
       setTimeout(() => beep(180, 0.12, 'square', 0.025), 90);
@@ -406,14 +406,7 @@ export default function DeployGame() {
       }
     }
 
-    function comboMultiplier(combo: number) {
-      // Map combo count to multiplier tiers
-      const tiers = params.comboTiers;
-      const mults = params.comboMult;
-      let m = 1;
-      for (let i = 0; i < tiers.length; i++) if (combo >= tiers[i]) m = mults[i];
-      return m;
-    }
+
 
     function endFail() {
       cancelAnimationFrame(animationFrameId);
@@ -438,7 +431,6 @@ export default function DeployGame() {
         const entry = {
           id: String(now.getTime()),
           name: i18n.t('game.me'),
-          initials: i18n.t('game.me'),
           score: state.score,
           ts: now.toISOString(),
         };

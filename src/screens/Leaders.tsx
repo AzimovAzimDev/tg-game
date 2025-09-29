@@ -21,7 +21,6 @@ export default function Leaders() {
         .map((r: any, idx: number) => ({
           id: String(r?.id ?? idx),
           name: String(r?.name ?? t('game.me')),
-          initials: String(r?.initials ?? t('game.me')),
           score: Number(r?.score ?? 0),
           ts: r?.ts,
         }))
