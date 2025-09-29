@@ -29,6 +29,7 @@ export default function Rules({ onStart }: Props) {
     { id: 2, text: t('rules.list.2') },
     { id: 3, text: t('rules.list.3') },
     { id: 4, text: t('rules.list.4') },
+    { id: 5, text: t('rules.list.5') },
   ];
 
   // Ordered steps list (previously shown via alert in the game)

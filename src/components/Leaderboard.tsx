@@ -20,7 +20,7 @@ export type LeaderboardProps = {
 export default function Leaderboard({
   winnersTitle,
   othersTitle,
-  prizeCount = 3,
+  prizeCount = 1,
   entries,
   mode = 'two-sections',
 }: LeaderboardProps) {
@@ -71,7 +71,7 @@ export default function Leaderboard({
               initials={e.initials}
               score={e.score}
               ts={e.ts}
-              selected={i === 2} // 3rd row in the PNG has a darker bg
+              selected={i === 0}
             />
           ))}
         </ul>

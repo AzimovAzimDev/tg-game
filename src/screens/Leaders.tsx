@@ -41,6 +41,8 @@ export default function Leaders() {
     }}>
         <h1 style={{ margin: 0, padding: 20 }}>{t('leaders.myResults')}</h1>
 
+        <div style={{ padding: '0 20px 20px', opacity: 0.8 }}>{t('leaders.disclaimer')}</div>
+
       {/* Personal leaderboard block positioned below the title */}
       <div>
         {entries.length > 0 ? (
