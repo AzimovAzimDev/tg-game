@@ -340,17 +340,17 @@ export default function DeployGame() {
       if (kind.type === 'bad') {
         // Bad catch: no longer blocks the player; just score penalty
         state.combo = 1;
-        state.score -= 10;
+        state.score -= 1;
         errorBuzz();
-        updateUI('−10', '#e74c3c');
+        updateUI('-1', '#e74c3c');
         return;
       }
 
       // Blocked mechanic removed. Heal always helps regardless of state.
       if (kind.type === 'heal') {
-        state.score += 10;
+        state.score += 1;
         beep(600, 0.08, 'sine', 0.03);
-        updateUI(`+10`, '#2ecc71');
+        updateUI('+1', '#2ecc71');
         return;
       }
 
@@ -379,24 +379,19 @@ export default function DeployGame() {
           const dx = finalX - p.x;
 
           state.stacked.push({ kind, w: params.blockSize.w, h: params.blockSize.h, dx });
-          // Score: base * combo multiplier
-          const mult = comboMultiplier(state.combo);
-          const add = Math.floor(params.points.base * mult);
-          state.score += add;
           state.combo = Math.min(10, state.combo + 1);
           beep(520, 0.06, 'sine', 0.03);
-          updateUI(`+${add}`, '#2ecc71');
           // advance goal
           state.goalIndex = (state.goalIndex + 1) % STEPS.length;
           // on sequence finish, end game
           if (state.goalIndex === 0) {
             const cycleTimeSec = (state.elapsedMs - state.cycleStartMs) / 1000;
             let bonus = 0;
-            if (cycleTimeSec <= 10) {
+            if (cycleTimeSec <= 30) {
               bonus = 40;
-            } else if (cycleTimeSec <= 15) {
+            } else if (cycleTimeSec <= 40) {
               bonus = 25;
-            } else if (cycleTimeSec <= 20) {
+            } else if (cycleTimeSec <= 60) {
               bonus = 10;
             }
             state.score += bonus;
@@ -542,6 +537,17 @@ export default function DeployGame() {
         ctx.strokeStyle = '#2ecc71';
         roundRect(ctx, x, y, w, h, 8, false, true);
         ctx.shadowBlur = 0;
+      }
+
+      // +1 / -1 indicator
+      if (kind.type === 'heal' || kind.type === 'bad') {
+        const sign = kind.type === 'heal' ? '+1' : '-1';
+        const color = kind.type === 'heal' ? '#2ecc71' : '#e74c3c';
+        ctx.fillStyle = color;
+        ctx.font = 'bold 14px system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'top';
+        ctx.fillText(sign, cx + w / 2 - 4, cy - h / 2 + 4);
       }
 
       // Icon only (no text description)
