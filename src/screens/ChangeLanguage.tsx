@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import s from "./ChangeLanguage.module.css";
 import i18n from "../i18n";
 import { USER_PREFERENCES } from "../config/userPreferences";
@@ -25,6 +26,7 @@ export default function ChangeLanguage({
   onSave,
   SaveButtonComponent,
 }: ChangeLanguageProps) {
+  const { t } = useTranslation();
   const [lang, setLang] = useState<Lang>(initialLanguage);
 
   const Button =
@@ -38,19 +40,19 @@ export default function ChangeLanguage({
   return (
     <div className={s.page}>
       <header className={s.header}>
-        <h1 className={s.title}>Сменить&nbsp;язык</h1>
+        <h1 className={s.title}>{t('changeLanguage.title')}</h1>
       </header>
 
       <main className={s.content}>
-        <ul className={s.list} role="radiogroup" aria-label="Выбор языка">
+        <ul className={s.list} role="radiogroup" aria-label={t('languageSelect.ariaLabel')}>
           <LanguageItem
-            label="Русский"
+            label={t('languageSelect.russian')}
             value="ru"
             checked={lang === "ru"}
             onChange={() => setLang("ru")}
           />
           <LanguageItem
-            label="Қазақша"
+            label={t('languageSelect.kazakh')}
             value="kk"
             checked={lang === "kk"}
             onChange={() => setLang("kk")}
@@ -65,9 +67,9 @@ export default function ChangeLanguage({
             setCookie(USER_PREFERENCES.languageCookie, lang);
             onSave?.(lang);
           }}
-          aria-label="Сохранить"
+          aria-label={t('changeLanguage.save')}
         >
-          Сохранить
+          {t('changeLanguage.save')}
         </Button>
       </footer>
     </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import "./leaderboard.css";
 
 export type Entry = {
@@ -16,12 +17,16 @@ export type LeaderboardProps = {
 };
 
 export default function Leaderboard({
-  winnersTitle = "Получат приз от Kolesa Group",
-  othersTitle = "Все участники",
+  winnersTitle,
+  othersTitle,
   prizeCount = 3,
   entries,
   mode = 'two-sections',
 }: LeaderboardProps) {
+  const { t } = useTranslation();
+  const finalWinnersTitle = winnersTitle || t('leaderboard.winnersTitle');
+  const finalOthersTitle = othersTitle || t('leaderboard.othersTitle');
+
   const winners = entries.slice(0, prizeCount);
   const others = entries.slice(prizeCount);
 
@@ -30,7 +35,7 @@ export default function Leaderboard({
       <div className="lb-root">
         <section className="lb-section">
           <header className="lb-title lb-title--green">
-            <span className="lb-title-text">{winnersTitle}</span>
+            <span className="lb-title-text">{finalWinnersTitle}</span>
           </header>
           <ul className="lb-list">
             {entries.map((e, i) => (
@@ -52,7 +57,7 @@ export default function Leaderboard({
     <div className="lb-root">
       <section className="lb-section">
         <header className="lb-title lb-title--green">
-          <span className="lb-title-text">{winnersTitle}</span>
+          <span className="lb-title-text">{finalWinnersTitle}</span>
         </header>
 
         <ul className="lb-list">
@@ -71,7 +76,7 @@ export default function Leaderboard({
 
       <section className="lb-section">
         <header className="lb-title lb-title--amber">
-          <span className="lb-title-text">{othersTitle}</span>
+          <span className="lb-title-text">{finalOthersTitle}</span>
         </header>
 
         <ul className="lb-list">
@@ -103,6 +108,7 @@ function LeaderboardRow({
   score: number;
   selected?: boolean;
 }) {
+  const { t } = useTranslation();
   return (
     <li className={`lb-row ${selected ? "is-selected" : ""}`}>
       <div className="lb-left">
@@ -115,7 +121,7 @@ function LeaderboardRow({
         <div className="lb-name">{name}</div>
       </div>
 
-      <div className="lb-right" aria-label={`${score} points`}>
+      <div className="lb-right" aria-label={t('leaderboard.pointsAriaLabel', { score })}>
         <StarIcon className="lb-star" />
         <span className="lb-score">{score}</span>
       </div>

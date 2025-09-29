@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Leaderboard from '../components/Leaderboard';
 import type { Entry } from '../components/Leaderboard';
 
 export default function Leaders() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     // Ensure unified background color per spec
     document.body.style.background = '#1D2129';
@@ -17,8 +20,8 @@ export default function Leaders() {
       entries = list
         .map((r: any, idx: number) => ({
           id: String(r?.id ?? idx),
-          name: String(r?.name ?? 'Я'),
-          initials: String(r?.initials ?? 'Я'),
+          name: String(r?.name ?? t('game.me')),
+          initials: String(r?.initials ?? t('game.me')),
           score: Number(r?.score ?? 0),
         }))
         .filter(e => Number.isFinite(e.score))
@@ -35,14 +38,14 @@ export default function Leaders() {
       color: '#e5e7eb',
       position: 'relative',
     }}>
-        <h1 style={{ margin: 0, padding: 20 }}>Мои результаты</h1>
+        <h1 style={{ margin: 0, padding: 20 }}>{t('leaders.myResults')}</h1>
 
       {/* Personal leaderboard block positioned below the title */}
       <div>
         {entries.length > 0 ? (
-          <Leaderboard entries={entries} mode="single" winnersTitle="Мои результаты" />
+          <Leaderboard entries={entries} mode="single" winnersTitle={t('leaders.myResults')} />
         ) : (
-          <div style={{ padding: 20, opacity: 0.8 }}>Пока нет результатов. Сыграйте игру, чтобы увидеть свои баллы здесь.</div>
+          <div style={{ padding: 20, opacity: 0.8 }}>{t('leaders.noResults')}</div>
         )}
       </div>
     </div>

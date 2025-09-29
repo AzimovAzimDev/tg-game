@@ -89,6 +89,34 @@ i18n.use(initReactI18next).init({
           myResults: 'Мои результаты',
           noResults: 'Пока нет результатов. Сыграйте игру, чтобы увидеть свои баллы здесь.',
         },
+        tabs: {
+          home: 'Главная',
+          results: 'Результаты',
+          profile: 'Профиль',
+          language: 'Язык',
+          startGameAria: 'Начать игру',
+          bottomTabsAria: 'Нижние вкладки',
+        },
+        successModal: {
+          ariaLabel: 'Успех',
+          alt: 'Успех',
+          yourScore: 'Ваши баллы: <strong>{{score}}</strong>',
+          submitScore: 'Засчитать мои балы',
+          playAgain: 'Сыграть ещё раз',
+        },
+        unsuccessModal: {
+          ariaLabel: 'Неуспех',
+          alt: 'Неуспех',
+        },
+        leaderboard: {
+          winnersTitle: 'Получат приз от Kolesa Group',
+          othersTitle: 'Все участники',
+          pointsAriaLabel: '{{score}} очков',
+        },
+        changeLanguage: {
+          title: 'Сменить язык',
+          save: 'Сохранить',
+        },
       },
     },
     kk: {
@@ -159,6 +187,34 @@ i18n.use(initReactI18next).init({
           myResults: 'Менің нәтижелерім',
           noResults: 'Әзірше нәтиже жоқ. Өз ұпайларыңызды көру үшін ойын ойнаңыз.',
         },
+        tabs: {
+          home: 'Басты',
+          results: 'Нәтижелер',
+          profile: 'Профиль',
+          language: 'Тіл',
+          startGameAria: 'Ойынды бастау',
+          bottomTabsAria: 'Төменгі бетбелгілер',
+        },
+        successModal: {
+          ariaLabel: 'Сәттілік',
+          alt: 'Сәттілік',
+          yourScore: 'Сіздің ұпайларыңыз: <strong>{{score}}</strong>',
+          submitScore: 'Менің ұпайларымды есептеңіз',
+          playAgain: 'Қайта ойнау',
+        },
+        unsuccessModal: {
+          ariaLabel: 'Сәтсіздік',
+          alt: 'Сәтсіздік',
+        },
+        leaderboard: {
+          winnersTitle: 'Kolesa Group-тан сыйлық алады',
+          othersTitle: 'Барлық қатысушылар',
+          pointsAriaLabel: '{{score}} ұпай',
+        },
+        changeLanguage: {
+          title: 'Тілді өзгерту',
+          save: 'Сақтау',
+        },
       },
     },
     en: {
@@ -224,6 +280,38 @@ i18n.use(initReactI18next).init({
         },
         profile: {
           actionsAria: 'Profile actions',
+        },
+        leaders: {
+          myResults: 'My Results',
+          noResults: 'No results yet. Play a game to see your scores here.',
+        },
+        tabs: {
+          home: 'Home',
+          results: 'Results',
+          profile: 'Profile',
+          language: 'Language',
+          startGameAria: 'Start Game',
+          bottomTabsAria: 'Bottom Tabs',
+        },
+        successModal: {
+          ariaLabel: 'Success',
+          alt: 'Success',
+          yourScore: 'Your score: <strong>{{score}}</strong>',
+          submitScore: 'Submit my score',
+          playAgain: 'Play again',
+        },
+        unsuccessModal: {
+          ariaLabel: 'Failure',
+          alt: 'Failure',
+        },
+        leaderboard: {
+          winnersTitle: 'Will receive a prize from Kolesa Group',
+          othersTitle: 'All participants',
+          pointsAriaLabel: '{{score}} points',
+        },
+        changeLanguage: {
+          title: 'Change language',
+          save: 'Save',
         },
       },
     },
