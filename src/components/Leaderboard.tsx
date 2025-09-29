@@ -6,6 +6,7 @@ export type Entry = {
   name: string;
   initials: string;
   score: number;
+  ts?: string;
 };
 
 export type LeaderboardProps = {
@@ -45,6 +46,7 @@ export default function Leaderboard({
                 name={e.name}
                 initials={e.initials}
                 score={e.score}
+                ts={e.ts}
               />
             ))}
           </ul>
@@ -68,6 +70,7 @@ export default function Leaderboard({
               name={e.name}
               initials={e.initials}
               score={e.score}
+              ts={e.ts}
               selected={i === 2} // 3rd row in the PNG has a darker bg
             />
           ))}
@@ -87,6 +90,7 @@ export default function Leaderboard({
               name={e.name}
               initials={e.initials}
               score={e.score}
+              ts={e.ts}
             />
           ))}
         </ul>
@@ -100,15 +104,19 @@ function LeaderboardRow({
   name,
   initials,
   score,
+  ts,
   selected = false,
 }: {
   rank: number;
   name: string;
   initials: string;
   score: number;
+  ts?: string;
   selected?: boolean;
 }) {
   const { t } = useTranslation();
+  const formattedDate = ts ? new Date(ts).toLocaleString() : name;
+
   return (
     <li className={`lb-row ${selected ? "is-selected" : ""}`}>
       <div className="lb-left">
@@ -118,7 +126,7 @@ function LeaderboardRow({
           <span className="lb-avatar-text">{initials}</span>
         </div>
 
-        <div className="lb-name">{name}</div>
+        <div className="lb-name">{formattedDate}</div>
       </div>
 
       <div className="lb-right" aria-label={t('leaderboard.pointsAriaLabel', { score })}>

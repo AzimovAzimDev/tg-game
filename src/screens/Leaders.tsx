@@ -23,6 +23,7 @@ export default function Leaders() {
           name: String(r?.name ?? t('game.me')),
           initials: String(r?.initials ?? t('game.me')),
           score: Number(r?.score ?? 0),
+          ts: r?.ts,
         }))
         .filter(e => Number.isFinite(e.score))
         .sort((a, b) => b.score - a.score);
