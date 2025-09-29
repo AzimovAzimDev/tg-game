@@ -165,6 +165,7 @@ export default function DeployGame() {
       playH: number;
       timeDropCounter: number; // counts normal spawns to drop a time power-up every 12
       deploys: number; // completed full sequences (finished deploy)
+      cycleStartMs: number;
     }
 
     let state: GameState;
@@ -207,6 +208,7 @@ export default function DeployGame() {
         playH: 0,
         timeDropCounter: 0,
         deploys: 0,
+        cycleStartMs: 0,
       };
       resizeCanvas();
       // center platform
@@ -435,8 +437,18 @@ export default function DeployGame() {
           state.goalIndex = (state.goalIndex + 1) % STEPS.length;
           // on sequence finish give bonus and ramp
           if (state.goalIndex === 0) {
-            const bonus = Math.floor((state.timeLeftMs / 1000) * params.points.finishPerSec);
+            const cycleTimeSec = (state.elapsedMs - state.cycleStartMs) / 1000;
+            let bonus = 0;
+            if (cycleTimeSec <= 10) {
+              bonus = 40;
+            } else if (cycleTimeSec <= 15) {
+              bonus = 25;
+            } else if (cycleTimeSec <= 20) {
+              bonus = 10;
+            }
             state.score += bonus;
+            state.cycleStartMs = state.elapsedMs;
+
             chord([660, 880, 1320], 0.22);
             showToast(i18n.t('game.cycleComplete'));
             // Count a completed deploy
@@ -445,7 +457,9 @@ export default function DeployGame() {
             state.stacked = [];
             // Slightly increase difficulty by reducing spawn interval a bit
             state.spawnIntervalMs = Math.max(params.spawnIntervalMin, state.spawnIntervalMs - 60);
-            updateUI(`+${bonus}`, '#2ecc71');
+            if (bonus > 0) {
+              updateUI(`+${bonus}`, '#2ecc71');
+            }
           }
         } else {
           // Wrong step
