@@ -31,8 +31,7 @@ export default function DeployGame() {
     type BlockKind =
       | { type: 'step'; step: StepId }
       | { type: 'bad'; name: 'bug' | 'infra' }
-      | { type: 'heal'; name: 'fix-bug' | 'fix-infra' }
-      | { type: 'time' };
+      | { type: 'heal'; name: 'fix-bug' | 'fix-infra' };
 
     type FallingBlock = {
       id: string;
@@ -53,8 +52,8 @@ export default function DeployGame() {
       spawnIntervalStart: 1000,
       spawnIntervalMin: 600,
       rampEverySec: 20,
-      fallSpeedStart: 180,
-      fallSpeedMax: 300,
+      fallSpeedStart: 270,
+      fallSpeedMax: 450,
       fallRampPct: 0.06,
       blockSize: { w: 60, h: 60, stackCompression: 0.65 },
       platformWidth: 240,
@@ -94,7 +93,6 @@ export default function DeployGame() {
 
     // HUD elements (reuse existing timerbar and a few chips, repurpose combo->score)
     const hudTime = document.getElementById('hudTime') as HTMLElement;
-    const timeFill = document.getElementById('timeFill') as HTMLDivElement;
     const hudNext = document.getElementById('hudNext') as HTMLElement;
     // Add a score span inside the HUD if not present
     let scoreChip = document.getElementById('scoreChip') as HTMLDivElement | null;
@@ -148,7 +146,6 @@ export default function DeployGame() {
 
     interface GameState {
       running: boolean;
-      timeLeftMs: number;
       elapsedMs: number;
       score: number;
       combo: number; // numeric combo multiplier base
@@ -164,7 +161,6 @@ export default function DeployGame() {
       t0: number; // last frame timestamp
       playW: number;
       playH: number;
-      timeDropCounter: number; // counts normal spawns to drop a time power-up every 12
       deploys: number; // completed full sequences (finished deploy)
       cycleStartMs: number;
     }
@@ -191,7 +187,6 @@ export default function DeployGame() {
     function resetState() {
       state = {
         running: false,
-        timeLeftMs: params.durationMs,
         elapsedMs: 0,
         score: 0,
         combo: 1,
@@ -207,7 +202,6 @@ export default function DeployGame() {
         t0: performance.now(),
         playW: 0,
         playH: 0,
-        timeDropCounter: 0,
         deploys: 0,
         cycleStartMs: 0,
       };
@@ -227,12 +221,8 @@ export default function DeployGame() {
 
     function updateUI(deltaText?: string, deltaColor?: string) {
       // Time label
-      const secs = Math.max(0, Math.ceil(state.timeLeftMs / 1000));
+      const secs = Math.floor(state.elapsedMs / 1000);
       hudTime.textContent = `${secs.toString().padStart(2, '0')}s`;
-      if (secs <= 15) hudTime.style.color = '#e74c3c'; else hudTime.style.color = '';
-      // Timer bar fill (consumed)
-      const consumed = 1 - state.timeLeftMs / params.durationMs;
-      timeFill.style.width = `${Math.max(0, Math.min(1, consumed)) * 100}%`;
       // Score
       hudScore.textContent = String(state.score);
       if (deltaText) {
@@ -304,37 +294,10 @@ export default function DeployGame() {
         displayEmoji = failEmojis[Math.floor(Math.random() * failEmojis.length)];
       } else if (kind.type === 'heal') {
         displayEmoji = healEmojis[Math.floor(Math.random() * healEmojis.length)];
-      } else if (kind.type === 'time') {
-        displayEmoji = '⏳';
       }
 
       const block: FallingBlock = { id: Math.random().toString(36).slice(2), kind, x, y, vx, vy, w, h, displayEmoji };
       state.blocks.push(block);
-      // Count normal spawns and drop an additional time power-up every 12 blocks
-      state.timeDropCounter++;
-      if (state.timeDropCounter >= 12) {
-        state.timeDropCounter = 0;
-        if (state.blocks.length < params.maxActiveBlocks) {
-          const timeKind: BlockKind = { type: 'time' };
-          const w2 = w; const h2 = h;
-          const x2 = rand(w2 / 2, state.playW - w2 / 2);
-          const y2 = y - h2 - 8;
-          const vx2 = rand(-20, 20);
-          const vy2 = state.fallSpeed;
-          const timeBlock: FallingBlock = {
-            id: Math.random().toString(36).slice(2),
-            kind: timeKind,
-            x: x2,
-            y: y2,
-            vx: vx2,
-            vy: vy2,
-            w: w2,
-            h: h2,
-            displayEmoji: '⏳',
-          };
-          state.blocks.push(timeBlock);
-        }
-      }
     }
 
     function easePlatform() {
@@ -386,18 +349,8 @@ export default function DeployGame() {
       // Blocked mechanic removed. Heal always helps regardless of state.
       if (kind.type === 'heal') {
         state.score += 10;
-        state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.heal);
         beep(600, 0.08, 'sine', 0.03);
-        const healSec = Math.round(params.timeBonus.heal / 1000);
-        updateUI(`+10 +${healSec}s`, '#2ecc71');
-        return;
-      }
-
-      if (kind.type === 'time') {
-        state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.time);
-        beep(700, 0.08, 'sine', 0.03);
-        const addSec = Math.round(params.timeBonus.time / 1000);
-        updateUI(`+${addSec}s`, '#2ecc71');
+        updateUI(`+10`, '#2ecc71');
         return;
       }
 
@@ -431,7 +384,6 @@ export default function DeployGame() {
           const add = Math.floor(params.points.base * mult);
           state.score += add;
           state.combo = Math.min(10, state.combo + 1);
-          state.timeLeftMs = Math.min(params.maxDurationMs, state.timeLeftMs + params.timeBonus.correct);
           beep(520, 0.06, 'sine', 0.03);
           updateUI(`+${add}`, '#2ecc71');
           // advance goal
@@ -454,9 +406,7 @@ export default function DeployGame() {
         } else {
           // Wrong step
           state.combo = 1;
-          state.timeLeftMs = Math.max(0, state.timeLeftMs - params.timePenalty.wrong);
           errorBuzz();
-          updateUI('−5s', '#e74c3c');
         }
       }
     }
@@ -592,16 +542,6 @@ export default function DeployGame() {
         ctx.strokeStyle = '#2ecc71';
         roundRect(ctx, x, y, w, h, 8, false, true);
         ctx.shadowBlur = 0;
-      } else if (kind.type === 'time') {
-        // Cyan border/glow for time bonus
-        const t = performance.now() / 1000;
-        const pulse = (Math.sin(t * 4) + 1) / 2;
-        ctx.shadowColor = 'rgba(0, 209, 255, 0.7)';
-        ctx.shadowBlur = 6 + 8 * pulse;
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#00d1ff';
-        roundRect(ctx, x, y, w, h, 8, false, true);
-        ctx.shadowBlur = 0;
       }
 
       // Icon only (no text description)
@@ -624,8 +564,9 @@ export default function DeployGame() {
       }
       if (kind.type === 'bad') return { text: kind.name === 'bug' ? i18n.t('game.bug') : i18n.t('game.infra'), emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
       if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? i18n.t('game.fixBug') : i18n.t('game.fixInfra'), emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
-      // time bonus
-      return { text: i18n.t('game.time'), emoji: '⏳' };
+      // This part should not be reached if all BlockKind types are handled above.
+      // Added a fallback to satisfy TypeScript, but it indicates an unhandled case.
+      return { text: '', emoji: '' };
     }
 
     function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number, fill: boolean, stroke: boolean) {
@@ -647,13 +588,6 @@ export default function DeployGame() {
       const dt = Math.min(0.05, (now - state.t0) / 1000); // clamp dt
       state.t0 = now;
       state.elapsedMs += dt * 1000;
-      state.timeLeftMs -= dt * 1000;
-
-      if (state.timeLeftMs <= 0) {
-        state.timeLeftMs = 0;
-        updateUI();
-        return endFail();
-      }
 
       maybeRampDifficulty();
 
@@ -800,11 +734,6 @@ export default function DeployGame() {
             </div>
           </div>
         </div>
-        <div style={{ position: 'absolute', left: '12px', right: '12px', top: '44px', zIndex: 2 }}>
-          <div className="timerbar">
-            <div className="fill" id="timeFill" />
-          </div>
-        </div>
       </main>
       <SuccessModal
         isOpen={successOpen}
@@ -821,4 +750,3 @@ export default function DeployGame() {
     </div>
   );
 }
-
