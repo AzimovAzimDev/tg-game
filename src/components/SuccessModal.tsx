@@ -25,7 +25,7 @@ export default function SuccessModal({ isOpen, onClose, score, onSubmitScore, on
           />
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', alignItems: 'stretch' }}>
-          <Button onClick={onSubmitScore}>{t('successModal.submitScore')}</Button>
+          <Button onClick={onSubmitScore}>{t('successModal.showAllResults')}</Button>
           <Button variant="gray" onClick={onPlayAgain}>{t('successModal.playAgain')}</Button>
         </div>
       </div>

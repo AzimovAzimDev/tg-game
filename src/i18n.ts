@@ -105,7 +105,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Успех',
           alt: 'Успех',
           yourScore: 'Ваши баллы: <strong>{{score}}</strong>',
-          submitScore: 'Засчитать мои балы',
+          showAllResults: 'Показать все мои результаты',
           playAgain: 'Сыграть ещё раз',
         },
         unsuccessModal: {
@@ -206,7 +206,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Сәттілік',
           alt: 'Сәттілік',
           yourScore: 'Сіздің ұпайларыңыз: <strong>{{score}}</strong>',
-          submitScore: 'Менің ұпайларымды есептеңіз',
+          showAllResults: 'Барлық нәтижелерімді көрсету',
           playAgain: 'Қайта ойнау',
         },
         unsuccessModal: {
@@ -307,7 +307,7 @@ i18n.use(initReactI18next).init({
           ariaLabel: 'Success',
           alt: 'Success',
           yourScore: 'Your score: <strong>{{score}}</strong>',
-          submitScore: 'Submit my score',
+          showAllResults: 'Show all my results',
           playAgain: 'Play again',
         },
         unsuccessModal: {
