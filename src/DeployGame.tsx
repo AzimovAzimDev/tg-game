@@ -15,6 +15,7 @@ export default function DeployGame() {
   const [finalScoreNum, setFinalScoreNum] = useState(0);
 
   useEffect(() => {
+    let animationFrameId: number;
     // Types from the spec
     type StepId =
       | 'requirements'
@@ -470,7 +471,10 @@ export default function DeployGame() {
     }
 
     function endFail() {
+      cancelAnimationFrame(animationFrameId);
       state.running = false;
+      state.blocks = []; // Clear falling blocks
+      draw(); // Draw one last time to clear the falling blocks from canvas
       finalScore.textContent = String(state.score);
       // Save simple stats
       const raw = localStorage.getItem('deployGameStats');
@@ -688,9 +692,10 @@ export default function DeployGame() {
       state.platform.targetX = clamp(state.platform.targetX, state.platform.w / 2, state.playW - state.platform.w / 2);
 
       easePlatform();
+      if (!state.running) return;
       updateUI();
       draw();
-      requestAnimationFrame(tick);
+      animationFrameId = requestAnimationFrame(tick);
     }
 
     function startGame() {
@@ -698,7 +703,7 @@ export default function DeployGame() {
       resetState();
       state.running = true;
       state.t0 = performance.now();
-      requestAnimationFrame(tick);
+      animationFrameId = requestAnimationFrame(tick);
       beep(440, 0.08, 'sine', 0.03);
       setTimeout(() => beep(660, 0.08, 'sine', 0.03), 110);
     }
@@ -765,6 +770,7 @@ export default function DeployGame() {
     startGame();
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('keydown', keydown);
       window.removeEventListener('keyup', keyup);
