@@ -99,6 +99,16 @@ export default function Leaderboard({
   );
 }
 
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = date.getFullYear();
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+}
+
 function LeaderboardRow({
   rank,
   name,
@@ -115,17 +125,12 @@ function LeaderboardRow({
   selected?: boolean;
 }) {
   const { t } = useTranslation();
-  const formattedDate = ts ? new Date(ts).toLocaleString() : name;
+  const formattedDate = ts ? formatDate(ts) : name;
 
   return (
     <li className={`lb-row ${selected ? "is-selected" : ""}`}>
       <div className="lb-left">
         <div className="lb-rank">{rank}</div>
-
-        <div className="lb-avatar" aria-hidden>
-          <span className="lb-avatar-text">{initials}</span>
-        </div>
-
         <div className="lb-name">{formattedDate}</div>
       </div>
 
