@@ -435,7 +435,7 @@ export default function DeployGame() {
           updateUI(`+${add}`, '#2ecc71');
           // advance goal
           state.goalIndex = (state.goalIndex + 1) % STEPS.length;
-          // on sequence finish give bonus and ramp
+          // on sequence finish, end game
           if (state.goalIndex === 0) {
             const cycleTimeSec = (state.elapsedMs - state.cycleStartMs) / 1000;
             let bonus = 0;
@@ -447,19 +447,8 @@ export default function DeployGame() {
               bonus = 10;
             }
             state.score += bonus;
-            state.cycleStartMs = state.elapsedMs;
-
-            chord([660, 880, 1320], 0.22);
-            showToast(i18n.t('game.cycleComplete'));
-            // Count a completed deploy
-            state.deploys += 1;
-            // Clear the stack after completing Deploy to make room for next cycle
-            state.stacked = [];
-            // Slightly increase difficulty by reducing spawn interval a bit
-            state.spawnIntervalMs = Math.max(params.spawnIntervalMin, state.spawnIntervalMs - 60);
-            if (bonus > 0) {
-              updateUI(`+${bonus}`, '#2ecc71');
-            }
+            state.deploys += 1; // To show success modal
+            endFail();
           }
         } else {
           // Wrong step
