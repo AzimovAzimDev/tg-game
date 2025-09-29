@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import WebApp from '@twa-dev/sdk';
 import DeployGame from './DeployGame';
 import Rules from './screens/Rules';
 import Welcome from './screens/Welcome';
@@ -8,6 +10,10 @@ import Profile from './screens/Profile';
 
 export default function App() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    WebApp.expand();
+  }, []);
 
   return (
     <Routes>

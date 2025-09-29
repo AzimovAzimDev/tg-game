@@ -7,7 +7,6 @@ import App from './App.tsx';
 import './i18n';
 
 WebApp.ready();
-WebApp.expand();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
