@@ -1,12 +1,12 @@
 :root {
   /* Telegram theme fallbacks */
-  --bg: var(--tg-theme-bg_color, #0f1115);
-  --text: var(--tg-theme-text-color, #e5e7eb);
+  --bg: #0f1115;
+  --text: #e5e7eb;
   --muted: rgba(229, 231, 235, 0.75);
   --card: #151922;
   --border: #2a2f3a;
-  --button: var(--tg-theme-button_color, #e53935);
-  --buttonText: var(--tg-theme-button_text_color, #ffffff);
+  --button: #e53935;
+  --buttonText: #ffffff;
 }
 
 .screen {

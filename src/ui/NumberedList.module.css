@@ -1,9 +1,7 @@
 :root {
-  --card: var(--tg-theme-secondary_bg_color, #1a1f27);
+  --card: #1a1f27;
   --border: #2a2f36;
-  --text: var(--tg-theme-text-color, #e5e7eb);
-  --muted: rgba(229,231,235,.82);
-  --accent: #7b8798;
+  --text: #e5e7eb;
 }
 
 .card {
