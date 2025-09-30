@@ -37,7 +37,7 @@ export default function Leaders() {
       background: '#1D2129',
       color: '#e5e7eb',
       position: 'relative',
-      paddingTop: 'var(--safe-area-inset-top, 0px)',
+      paddingTop: 'calc(var(--safe-area-inset-top, 0px) + 50px)',
     }}>
         <h1 style={{ margin: 0, padding: 20 }}>{t('leaders.myResults')}</h1>
 
