@@ -718,7 +718,7 @@ export default function DeployGame() {
 
   return (
     <div className="wrap">
-      <main className="panel game" id="game" style={{ position: 'relative', overflow: 'hidden' }}>
+      <main className="panel game" id="game" style={{ position: 'relative', overflow: 'hidden', paddingTop: 'var(--safe-area-inset-top, 0px)' }}>
         <div className="hud" style={{ height: '56px', display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 8px 0' }}>
           <div className="chip">⏱️ <span id="hudTime">120s</span></div>
           <div className="chip"><strong id="hudNext">{t('game.goal')}:📝</strong></div>

@@ -11,8 +11,7 @@
 
 .screen {
   min-height: 100svh;
-  padding: 24px;
-  padding-bottom: calc(24px + var(--safe-area-inset-bottom, 18px));
+  padding: calc(24px + var(--safe-area-inset-top, 0px)) 24px calc(24px + var(--safe-area-inset-bottom, 18px));
   display: grid;
   place-items: center;
   position: relative; /* allow absolutely-positioned background consoles */
