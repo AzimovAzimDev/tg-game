@@ -85,11 +85,11 @@ export default function DeployGame() {
       canvas.id = 'gameCanvas';
       canvas.style.position = 'absolute';
       canvas.style.left = '0';
-      canvas.style.top = '56px'; // below HUD area
+      canvas.style.top = 'calc(56px + var(--safe-area-inset-top, 0px) + 50px)'; // below HUD area
       canvas.style.right = '0';
       canvas.style.bottom = '0';
       canvas.style.width = '100%';
-      canvas.style.height = 'calc(100% - 56px)';
+      canvas.style.height = 'calc(100% - 56px - var(--safe-area-inset-top, 0px) - 50px)';
       gameEl.appendChild(canvas);
     }
     const ctx = canvas.getContext('2d')!;
