@@ -6,18 +6,6 @@ import logo from '../assets/main.png';
 import { USER_PREFERENCES } from '../config/userPreferences';
 import Button from '../ui/Button';
 
-const textStyle: React.CSSProperties = {
-  width: '100%',
-  height: 19,
-  fontFamily: 'Golos Text, system-ui, sans-serif',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: 16,
-  lineHeight: '19px',
-  textAlign: 'center',
-  color: '#FFFFFF',
-};
-
 export type LanguageSelectModalProps = {
   isOpen: boolean;
   onClose: () => void;

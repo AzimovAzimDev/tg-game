@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-// import WebApp from '@twa-dev/sdk';
 import './DeployGame.css';
 import { useNavigate } from 'react-router-dom';
-
 import { useTranslation } from 'react-i18next';
 import SuccessModal from './components/SuccessModal';
 import UnsuccessModal from './components/UnsuccessModal';
+import {setGameScore} from "./utils/telegram.ts";
 
 // Deploy or Die — Tower Bloxx–style paddle catch implementation
 // Single-file implementation with canvas rendering and DOM HUD
@@ -181,7 +180,6 @@ export default function DeployGame() {
       canvas!.height = h;
       state.playW = w;
       state.playH = h;
-      // Place platform 48px from bottom
       state.platform.y = h - 48;
       // Platform should be 1.5x the block width
       state.platform.w = Math.round(params.blockSize.w * 1.5);
@@ -409,6 +407,29 @@ export default function DeployGame() {
       }
     }
 
+    const handleSubmitScore = async () => {
+      if (typeof state.score === 'number' && state.score > 0) {
+        try {
+          const tg = (window as any).Telegram?.WebApp;
+          if (tg && tg.initDataUnsafe) {
+            const { message , user, chat } = tg.initDataUnsafe;
+            if (message?.message_id && user?.id && chat?.id) {
+              await setGameScore({
+                messageId: message.message_id.toString(),
+                chatId: chat.id.toString(),
+                userId: user.id.toString(),
+                gameScore: state.score,
+                gameName: 'deploy-or-die',
+                isTestBot: 0
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error sending score:', error);
+        }
+      }
+    };
+
 
 
     function endFail() {
@@ -446,6 +467,7 @@ export default function DeployGame() {
       setFinalScoreNum(state.score);
       if (state.deploys >= 1) {
         setSuccessOpen(true);
+        handleSubmitScore()
       } else {
         setFailOpen(true);
       }
