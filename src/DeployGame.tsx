@@ -118,7 +118,7 @@ export default function DeployGame() {
       scoreChip = document.createElement('div');
       scoreChip.className = 'chip';
       scoreChip.id = 'scoreChip';
-      scoreChip.innerHTML = `★ ${t('game.score')}: <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>`;
+      scoreChip.innerHTML = `★ <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>`;
       const hud = gameEl.querySelector('.hud');
       hud?.appendChild(scoreChip);
     }
@@ -251,7 +251,7 @@ export default function DeployGame() {
       }
       // Goal pill
       const goal = STEPS[state.goalIndex];
-      hudNext.textContent = `${t('game.goal')}: ${goal.label}`;
+      hudNext.textContent = `${t('game.goal')}: ${goal.emoji}`;
     }
 
     function rand(min: number, max: number) { return Math.random() * (max - min) + min; }
@@ -736,7 +736,7 @@ export default function DeployGame() {
       <main className="panel game" id="game" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="hud" style={{ height: '56px', display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 8px 0' }}>
           <div className="chip">⏱️ <span id="hudTime">120s</span></div>
-          <div className="chip">➡️ <strong id="hudNext">{t('game.goal')}: Get requirements 📝</strong></div>
+          <div className="chip"><strong id="hudNext">{t('game.goal')}:📝</strong></div>
           <div className="chip" onClick={toggleFullscreen} style={{ cursor: 'pointer' }}>
             {isFullscreen ? t('game.exitFullscreen') : t('game.fullscreen')}
           </div>

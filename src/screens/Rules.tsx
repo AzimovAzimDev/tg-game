@@ -49,6 +49,9 @@ export default function Rules({ onStart }: Props) {
 
   return (
     <div className={css.screen} role="main" aria-labelledby="r-title">
+      <Button onClick={start} aria-label={t('rules.startButtonAria')}>
+        {t('rules.startButton')}
+      </Button>
       <h1 id="r-title" className={css.title}>
         {t('rules.title')}
       </h1>
@@ -58,9 +61,6 @@ export default function Rules({ onStart }: Props) {
       <h2 className={css.title} style={{ fontSize: "1.1rem", marginTop: 16 }}>{t('rules.stepsTitle')}</h2>
       <NumberedList items={steps} ariaLabel={t('rules.stepsTitle')} />
 
-      <Button onClick={start} aria-label={t('rules.startButtonAria')}>
-        {t('rules.startButton')}
-      </Button>
     </div>
   );
 }
