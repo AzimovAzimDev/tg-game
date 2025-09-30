@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import WebApp from '@twa-dev/sdk';
+// import WebApp from '@twa-dev/sdk';
 import './DeployGame.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,23 +16,8 @@ export default function DeployGame() {
   const [successOpen, setSuccessOpen] = useState(false);
   const [failOpen, setFailOpen] = useState(false);
   const [finalScoreNum, setFinalScoreNum] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(WebApp.isFullscreen);
-
-  const toggleFullscreen = () => {
-    if (isFullscreen) {
-      WebApp.exitFullscreen();
-    } else {
-      WebApp.requestFullscreen();
-    }
-  };
 
   useEffect(() => {
-    const handleFullscreenChanged = () => {
-      setIsFullscreen(WebApp.isFullscreen);
-    };
-
-    WebApp.onEvent('fullscreenChanged', handleFullscreenChanged);
-
     let animationFrameId: number;
     // Types from the spec
     type StepId =
@@ -727,7 +712,7 @@ export default function DeployGame() {
       window.removeEventListener('deviceorientation', onDeviceOrientation);
       gameEl.removeEventListener('pointermove', onPointerMove as EventListener);
       gameEl.removeEventListener('touchmove', onPointerMove as EventListener);
-      WebApp.offEvent('fullscreenChanged', handleFullscreenChanged);
+      // WebApp.offEvent('fullscreenChanged', handleFullscreenChanged);
     };
   }, []);
 
@@ -737,9 +722,7 @@ export default function DeployGame() {
         <div className="hud" style={{ height: '56px', display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 8px 0' }}>
           <div className="chip">⏱️ <span id="hudTime">120s</span></div>
           <div className="chip"><strong id="hudNext">{t('game.goal')}:📝</strong></div>
-          <div className="chip" onClick={toggleFullscreen} style={{ cursor: 'pointer' }}>
-            {isFullscreen ? t('game.exitFullscreen') : t('game.fullscreen')}
-          </div>
+
         </div>
         <div className="toast" id="toast">{t('game.nice')}</div>
         <div className="finish" id="finish">

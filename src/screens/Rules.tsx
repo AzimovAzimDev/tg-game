@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import WebApp from "@twa-dev/sdk";
 import { useTranslation } from "react-i18next";
 import NumberedList from "../ui/NumberedList";
@@ -9,8 +9,23 @@ type Props = { onStart: () => void };
 
 export default function Rules({ onStart }: Props) {
   const { t } = useTranslation();
+  const [isFullscreen, setIsFullscreen] = useState(WebApp.isFullscreen);
+
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      WebApp.exitFullscreen();
+    } else {
+      WebApp.requestFullscreen();
+    }
+  };
 
   useEffect(() => {
+    const handleFullscreenChanged = () => {
+      setIsFullscreen(WebApp.isFullscreen);
+    };
+
+    WebApp.onEvent('fullscreenChanged', handleFullscreenChanged);
+
     // simple asset warmup — safe after user interacted on Welcome
     const audios = [
       "/sfx/correct.mp3",
@@ -22,6 +37,10 @@ export default function Rules({ onStart }: Props) {
       const a = new Audio(src);
       a.preload = "auto";
     });
+
+    return () => {
+      WebApp.offEvent('fullscreenChanged', handleFullscreenChanged);
+    };
   }, []);
 
   const list = [
@@ -49,9 +68,14 @@ export default function Rules({ onStart }: Props) {
 
   return (
     <div className={css.screen} role="main" aria-labelledby="r-title">
-      <Button onClick={start} aria-label={t('rules.startButtonAria')}>
-        {t('rules.startButton')}
-      </Button>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+        <Button onClick={toggleFullscreen} aria-label={t('game.fullscreen')}>
+          {isFullscreen ? t('game.exitFullscreen') : t('game.fullscreen')}
+        </Button>
+        <Button onClick={start} aria-label={t('rules.startButtonAria')}>
+          {t('rules.startButton')}
+        </Button>
+      </div>
       <h1 id="r-title" className={css.title}>
         {t('rules.title')}
       </h1>
