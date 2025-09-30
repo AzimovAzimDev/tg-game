@@ -410,20 +410,22 @@ export default function DeployGame() {
     const handleSubmitScore = async () => {
       if (typeof state.score === 'number' && state.score > 0) {
         try {
-          const tg = (window as any).Telegram?.WebApp;
-          if (tg && tg.initDataUnsafe) {
-            const { message , user, chat } = tg.initDataUnsafe;
-            if (message?.message_id && user?.id && chat?.id) {
+
+          const userId = localStorage.getItem('userId');
+          const messageId = localStorage.getItem('messageId');
+          const chatId = localStorage.getItem('chatId');
+          const isTestBot = Number(localStorage.getItem('isTestBot') ?? '0');
+
+            if (userId && messageId && chatId) {
               await setGameScore({
-                messageId: message.message_id.toString(),
-                chatId: chat.id.toString(),
-                userId: user.id.toString(),
+                messageId,
+                chatId,
+                userId,
                 gameScore: state.score,
                 gameName: 'deploy-or-die',
-                isTestBot: 0
+                isTestBot,
               });
             }
-          }
         } catch (error) {
           console.error('Error sending score:', error);
         }

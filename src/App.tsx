@@ -11,6 +11,18 @@ export default function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const userId = urlParams.get('userId');
+    const messageId = urlParams.get('messageId');
+    const chatId = urlParams.get('chatId');
+    const isTestBot = urlParams.get('isTestBot');
+
+    if (userId) localStorage.setItem('userId', userId);
+    if (messageId) localStorage.setItem('messageId', messageId);
+    if (chatId) localStorage.setItem('chatId', chatId);
+    if (isTestBot) localStorage.setItem('isTestBot', isTestBot);
+
     WebApp.expand();
 
     const handleSafeAreaChanged = () => {
