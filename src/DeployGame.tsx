@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import WebApp from '@twa-dev/sdk';
 import './DeployGame.css';
 import { useNavigate } from 'react-router-dom';
-import i18n from './i18n';
+
+import { useTranslation } from 'react-i18next';
 import SuccessModal from './components/SuccessModal';
 import UnsuccessModal from './components/UnsuccessModal';
 
@@ -10,11 +12,27 @@ import UnsuccessModal from './components/UnsuccessModal';
 
 export default function DeployGame() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [successOpen, setSuccessOpen] = useState(false);
   const [failOpen, setFailOpen] = useState(false);
   const [finalScoreNum, setFinalScoreNum] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(WebApp.isFullscreen);
+
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      WebApp.exitFullscreen();
+    } else {
+      WebApp.requestFullscreen();
+    }
+  };
 
   useEffect(() => {
+    const handleFullscreenChanged = () => {
+      setIsFullscreen(WebApp.isFullscreen);
+    };
+
+    WebApp.onEvent('fullscreenChanged', handleFullscreenChanged);
+
     let animationFrameId: number;
     // Types from the spec
     type StepId =
@@ -67,11 +85,11 @@ export default function DeployGame() {
       healBiasWhenBlocked: 0.85,
     } as const;
 
-    const STEPS: { id: StepId; label: string; emoji: string }[] = Object.keys(i18n.t('steps', { returnObjects: true })).map((key) => ({
+    const STEPS: { id: StepId; label: string; emoji: string }[] = Object.keys(t('steps', { returnObjects: true })).map((key) => (({
       id: key as StepId,
-      label: i18n.t(`steps.${key}`),
-      emoji: i18n.t(`steps.${key}`).split(' ').pop() || '',
-    }));
+      label: t(`steps.${key}`),
+      emoji: t(`steps.${key}`).split(' ').pop() || '',
+    })));
 
     // DOM refs
     const gameEl = document.getElementById('game') as HTMLDivElement;
@@ -100,7 +118,7 @@ export default function DeployGame() {
       scoreChip = document.createElement('div');
       scoreChip.className = 'chip';
       scoreChip.id = 'scoreChip';
-      scoreChip.innerHTML = `★ ${i18n.t('game.score')}: <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>`;
+      scoreChip.innerHTML = `★ ${t('game.score')}: <strong id="hudScore">0</strong> <span id="scoreDelta" style="margin-left:6px;color:#2ecc71;"></span>`;
       const hud = gameEl.querySelector('.hud');
       hud?.appendChild(scoreChip);
     }
@@ -233,7 +251,7 @@ export default function DeployGame() {
       }
       // Goal pill
       const goal = STEPS[state.goalIndex];
-      hudNext.textContent = `${i18n.t('game.goal')}: ${goal.label}`;
+      hudNext.textContent = `${t('game.goal')}: ${goal.label}`;
     }
 
     function rand(min: number, max: number) { return Math.random() * (max - min) + min; }
@@ -320,8 +338,8 @@ export default function DeployGame() {
         for (let i = 0; i < state.stacked.length; i++) totalH += state.stacked[i].h;
         surfaceY = p.y - totalH;
         const top = state.stacked[state.stacked.length - 1];
-        halfWidth = top.w / 2; // use last block width as catch width
-        supportCenterX = p.x + top.dx; // top block center including its offset
+        supportCenterX = p.x + top.dx;
+        halfWidth = top.w / 2;
       } else {
         halfWidth = p.w / 2 + 4; // no stack yet: use platform width
         supportCenterX = p.x;
@@ -430,7 +448,7 @@ export default function DeployGame() {
         const now = new Date();
         const entry = {
           id: String(now.getTime()),
-          name: i18n.t('game.me'),
+          name: t('game.me'),
           score: state.score,
           ts: now.toISOString(),
         };
@@ -490,7 +508,7 @@ export default function DeployGame() {
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.font = 'bold 14px system-ui, sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText(`${i18n.t('game.blocked')}: ${state.blocked === 'bug' ? `🐛 ${i18n.t('game.bug')}` : `⚠️ ${i18n.t('game.infra')}`}`, 8, 18);
+        ctx.fillText(`${t('game.blocked')}: ${state.blocked === 'bug' ? `🐛 ${t('game.bug')}` : `⚠️ ${t('game.infra')}`}`, 8, 18);
       }
     }
 
@@ -560,8 +578,8 @@ export default function DeployGame() {
         const step = STEPS.find(s => s.id === kind.step)!;
         return { text: step.label, emoji: step.emoji };
       }
-      if (kind.type === 'bad') return { text: kind.name === 'bug' ? i18n.t('game.bug') : i18n.t('game.infra'), emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
-      if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? i18n.t('game.fixBug') : i18n.t('game.fixInfra'), emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
+      if (kind.type === 'bad') return { text: kind.name === 'bug' ? t('game.bug') : t('game.infra'), emoji: kind.name === 'bug' ? '🐛' : '⚠️' };
+      if (kind.type === 'heal') return { text: kind.name === 'fix-bug' ? t('game.fixBug') : t('game.fixInfra'), emoji: kind.name === 'fix-bug' ? '✅' : '🛠' };
       // This part should not be reached if all BlockKind types are handled above.
       // Added a fallback to satisfy TypeScript, but it indicates an unhandled case.
       return { text: '', emoji: '' };
@@ -689,10 +707,10 @@ export default function DeployGame() {
     playAgain.addEventListener('click', startGame);
     shareBtn.addEventListener('click', async () => {
       const goal = STEPS[state.goalIndex];
-      const text = i18n.t('game.shareText', { score: state.score, goal: goal.label, emoji: goal.emoji });
+      const text = t('game.shareText', { score: state.score, goal: goal.label, emoji: goal.emoji });
       try {
         await navigator.clipboard.writeText(text);
-        showToast(i18n.t('game.copied'));
+        showToast(t('game.copied'));
       } catch {
         showToast(text);
       }
@@ -709,6 +727,7 @@ export default function DeployGame() {
       window.removeEventListener('deviceorientation', onDeviceOrientation);
       gameEl.removeEventListener('pointermove', onPointerMove as EventListener);
       gameEl.removeEventListener('touchmove', onPointerMove as EventListener);
+      WebApp.offEvent('fullscreenChanged', handleFullscreenChanged);
     };
   }, []);
 
@@ -717,18 +736,21 @@ export default function DeployGame() {
       <main className="panel game" id="game" style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="hud" style={{ height: '56px', display: 'flex', gap: '8px', alignItems: 'center', padding: '8px 8px 0' }}>
           <div className="chip">⏱️ <span id="hudTime">120s</span></div>
-          <div className="chip">➡️ <strong id="hudNext">{i18n.t('game.goal')}: Get requirements 📝</strong></div>
+          <div className="chip">➡️ <strong id="hudNext">{t('game.goal')}: Get requirements 📝</strong></div>
+          <div className="chip" onClick={toggleFullscreen} style={{ cursor: 'pointer' }}>
+            {isFullscreen ? t('game.exitFullscreen') : t('game.fullscreen')}
+          </div>
         </div>
-        <div className="toast" id="toast">{i18n.t('game.nice')}</div>
+        <div className="toast" id="toast">{t('game.nice')}</div>
         <div className="finish" id="finish">
           <div className="card">
-            <h2 id="endTitle">{i18n.t('game.endTitle')}</h2>
+            <h2 id="endTitle">{t('game.endTitle')}</h2>
             <div>
-              {i18n.t('game.finalScore')}: <strong id="finalScore">0</strong>
+              {t('game.finalScore')}: <strong id="finalScore">0</strong>
             </div>
             <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              <button className="primary" id="playAgain">{i18n.t('game.playAgain')}</button>
-              <button className="secondary" id="shareBtn">{i18n.t('game.copyResult')}</button>
+              <button className="primary" id="playAgain">{t('game.playAgain')}</button>
+              <button className="secondary" id="shareBtn">{t('game.copyResult')}</button>
             </div>
           </div>
         </div>

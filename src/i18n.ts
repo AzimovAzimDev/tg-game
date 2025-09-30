@@ -84,6 +84,8 @@ i18n.use(initReactI18next).init({
           playAgain: 'Играть снова',
           copyResult: 'Скопировать результат',
           nice: 'Отлично!',
+          fullscreen: 'Полный экран',
+          exitFullscreen: 'Выйти из полного экрана',
         },
         profile: {
           actionsAria: 'Действия профиля',
@@ -185,6 +187,8 @@ i18n.use(initReactI18next).init({
           playAgain: 'Қайта ойнау',
           copyResult: 'Нәтижені көшіру',
           nice: 'Керемет!',
+          fullscreen: 'Толық экран',
+          exitFullscreen: 'Толық экраннан шығу',
         },
         profile: {
           actionsAria: 'Профиль әрекеттері',
@@ -286,6 +290,8 @@ i18n.use(initReactI18next).init({
           playAgain: 'Play again',
           copyResult: 'Copy result',
           nice: 'Nice!',
+          fullscreen: 'Fullscreen',
+          exitFullscreen: 'Exit Fullscreen',
         },
         profile: {
           actionsAria: 'Profile actions',

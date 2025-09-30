@@ -13,6 +13,23 @@ export default function App() {
 
   useEffect(() => {
     WebApp.expand();
+
+    const handleSafeAreaChanged = () => {
+      const root = document.documentElement;
+      if (WebApp.safeAreaInset) {
+        root.style.setProperty('--safe-area-inset-top', `${WebApp.safeAreaInset.top}px`);
+        root.style.setProperty('--safe-area-inset-right', `${WebApp.safeAreaInset.right}px`);
+        root.style.setProperty('--safe-area-inset-bottom', `${WebApp.safeAreaInset.bottom}px`);
+        root.style.setProperty('--safe-area-inset-left', `${WebApp.safeAreaInset.left}px`);
+      }
+    };
+
+    WebApp.onEvent('safeAreaChanged', handleSafeAreaChanged);
+    handleSafeAreaChanged(); // Initial call
+
+    return () => {
+      WebApp.offEvent('safeAreaChanged', handleSafeAreaChanged);
+    };
   }, []);
 
   return (
