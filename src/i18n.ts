@@ -132,7 +132,7 @@ i18n.use(initReactI18next).init({
         home: 'Басты бет',
         languageSelect: {
           title: 'Выберите язык / Tiлдi таңдаңыз',
-          russian: 'Орысша',
+          russian: 'Русский',
           kazakh: 'Қазақша',
           ariaLabel: 'Тілді таңдау',
         },
@@ -236,7 +236,7 @@ i18n.use(initReactI18next).init({
         home: 'Home',
         languageSelect: {
           title: 'Choose language',
-          russian: 'Russian',
+          russian: 'Русский',
           kazakh: 'Kazakh',
           ariaLabel: 'Choose language',
         },

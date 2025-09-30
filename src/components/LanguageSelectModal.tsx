@@ -46,7 +46,6 @@ export default function LanguageSelectModal({ isOpen, onClose, cookieName }: Lan
     <Modal isOpen={isOpen} onClose={onClose} ariaLabel={t('languageSelect.ariaLabel')} closeOnBackdrop={false}>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <img src={logo} alt="Logo" style={{ height: '30vh', width: 'auto', borderRadius: 12 }} />
-        <div style={textStyle}>{t('languageSelect.title')}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%', alignItems: 'stretch' }}>
           <Button variant="gray" onClick={() => choose('ru')}>{t('languageSelect.russian')}</Button>
           <Button variant="gray" onClick={() => choose('kk')}>{t('languageSelect.kazakh')}</Button>
