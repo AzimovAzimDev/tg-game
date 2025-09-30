@@ -67,11 +67,11 @@ button:disabled{opacity:.65;cursor:not-allowed}
 
 @media (max-width:880px){
   .wrap{grid-template-columns:1fr;grid-template-areas:"game" "sidebar";}
-  .game{min-height:520px}
+  .game{min-height:100%}
 }
 
 @media (max-width:600px){
-  .game{min-height:70vh}
+  .game{min-height:100vh}
 }
 
 /* --- Fullscreen game overrides to make <main id="game"> fill the screen --- */
